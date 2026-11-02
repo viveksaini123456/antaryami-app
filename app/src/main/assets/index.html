@@ -1,0 +1,1321 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body>
+<title>Antaryami</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="theme-color" content="#040817">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one phone-width column (max 460px) centred on a deep-space grid; every screen is a full-height panel inside it.
+   Single dark theme by choice: neon campus-radar look taken from the Antaryami icon. */
+:root{
+  --bg:#040817; --bg-2:#071030; --panel:rgba(13,24,58,.72); --panel-solid:#0b1634; --panel-2:rgba(20,36,84,.55);
+  --line:rgba(96,150,255,.18); --line-2:rgba(96,170,255,.42);
+  --ink:#e9f1ff; --muted:#8c9cc6; --dim:#5d6c97;
+  --cyan:#3ad7ff; --blue:#2f7bff; --violet:#9b6bff; --pink:#ff4fb0; --amber:#ffb547; --mint:#34f5c5; --red:#ff5470;
+  --glow:0 0 0 1px rgba(58,215,255,.35),0 0 26px -4px rgba(58,215,255,.55);
+  --f-display:"Chakra Petch","Segoe UI",system-ui,sans-serif;
+  --f-body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(60% 40% at 50% 0%,rgba(47,123,255,.28),transparent 70%),radial-gradient(40% 30% at 90% 70%,rgba(155,107,255,.16),transparent 70%),radial-gradient(40% 30% at 0% 90%,rgba(58,215,255,.12),transparent 70%),
+  linear-gradient(rgba(96,150,255,.06) 1px,transparent 1px) 0 0/34px 34px,linear-gradient(90deg,rgba(96,150,255,.06) 1px,transparent 1px) 0 0/34px 34px}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.app{position:relative;z-index:1;max-width:460px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+@media (min-width:520px){.app{border-left:1px solid var(--line);border-right:1px solid var(--line);background:rgba(4,8,23,.55);box-shadow:0 0 80px -20px rgba(47,123,255,.35)}}
+.screen{flex:1;display:flex;flex-direction:column;gap:16px;padding-block:18px 28px;animation:screenIn .45s cubic-bezier(.2,.9,.3,1)}
+@keyframes screenIn{from{opacity:0;transform:translateY(14px)}}
+.mono{font-family:var(--f-mono)}
+.muted{color:var(--muted)}
+.small{font-size:12.5px}
+.disp{font-family:var(--f-display);letter-spacing:.02em}
+h1,h2,h3{margin:0;font-family:var(--f-display);font-weight:700;letter-spacing:.02em;text-wrap:balance}
+.eyebrow{font-family:var(--f-mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--cyan)}
+
+/* panels & controls */
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:16px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);position:relative}
+.panel.glow{border-color:var(--line-2);box-shadow:0 20px 50px -30px rgba(47,123,255,.8)}
+.corner{position:relative}
+.corner::before,.corner::after{content:"";position:absolute;width:14px;height:14px;border:2px solid var(--cyan);opacity:.8;pointer-events:none}
+.corner::before{top:-1px;left:-1px;border-right:0;border-bottom:0;border-top-left-radius:20px}
+.corner::after{bottom:-1px;right:-1px;border-left:0;border-top:0;border-bottom-right-radius:20px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:50px;padding:0 20px;border-radius:15px;border:1px solid transparent;font:700 15px var(--f-body);letter-spacing:.01em;transition:transform .15s,box-shadow .25s,background .25s,opacity .2s;white-space:nowrap;position:relative;overflow:hidden}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.pri{background:linear-gradient(120deg,var(--cyan),var(--blue) 60%,var(--violet));color:#03102a;box-shadow:0 12px 30px -12px rgba(58,215,255,.8)}
+.btn.pri::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.45) 50%,transparent 70%);transform:translateX(-120%);animation:sheen 3.2s ease-in-out infinite}
+@keyframes sheen{60%,100%{transform:translateX(120%)}}
+.btn.sec{background:var(--panel-2);border-color:var(--line-2);color:var(--ink)}
+.btn.sec:hover{border-color:var(--cyan)}
+.btn.ghost{background:transparent;color:var(--muted);height:40px}
+.btn.danger{background:rgba(255,84,112,.12);border-color:rgba(255,84,112,.45);color:#ff93a6}
+.btn.sm{height:38px;padding:0 14px;font-size:13.5px;border-radius:12px}
+.btn.block{width:100%}
+.ibtn{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:var(--panel-2);border:1px solid var(--line-2);color:var(--ink);transition:transform .2s,border-color .2s,box-shadow .25s;flex:none;position:relative}
+.ibtn:hover{border-color:var(--cyan);box-shadow:var(--glow)}
+.ibtn:active{transform:scale(.92)}
+.ibtn .dot{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--pink);color:#fff;font:700 10.5px var(--f-mono);display:grid;place-items:center;box-shadow:0 0 12px var(--pink)}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field>.lbl{font-size:12.5px;font-weight:700;color:var(--muted);letter-spacing:.02em}
+.inp{width:100%;min-width:0;height:50px;border-radius:14px;border:1px solid var(--line-2);background:rgba(3,8,26,.7);padding:0 14px;color:var(--ink);transition:border-color .2s,box-shadow .2s}
+textarea.inp{height:auto;min-height:74px;padding:12px 14px;resize:vertical}
+.inp::placeholder{color:var(--dim)}
+.inp:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 4px rgba(58,215,255,.15)}
+.inp.bad{border-color:var(--red)}
+select.inp{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 20px) 22px,calc(100% - 15px) 22px;background-size:5px 5px;background-repeat:no-repeat;padding-right:36px}
+.inp-wrap{position:relative}
+.inp-wrap>.ic{position:absolute;left:14px;top:16px;color:var(--muted);pointer-events:none}
+.inp-wrap>.inp{padding-left:42px}
+.err{color:#ff8fa2;font-size:12.5px;font-weight:600}
+.hint{color:var(--muted);font-size:12.5px;margin:0}
+.row{display:flex;gap:10px;align-items:center}
+.row.wrap{flex-wrap:wrap}
+.grow{flex:1;min-width:0}
+.sw{position:relative;width:46px;height:26px;border-radius:13px;border:1px solid var(--line-2);background:rgba(255,181,71,.16);flex:none;transition:background .25s,border-color .25s;padding:0}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--amber);box-shadow:0 0 10px var(--amber);transition:transform .3s cubic-bezier(.3,1.5,.5,1),background .25s,box-shadow .25s}
+.sw.on{background:rgba(52,245,197,.16);border-color:rgba(52,245,197,.5)}
+.sw.on::after{transform:translateX(20px);background:var(--mint);box-shadow:0 0 10px var(--mint)}
+.vis{display:inline-flex;align-items:center;gap:5px;font:600 10.5px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;min-width:66px;justify-content:flex-end}
+.vis.on{color:var(--mint)}.vis.off{color:var(--amber)}
+.chip{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 11px;border-radius:999px;border:1px solid var(--line-2);background:var(--panel-2);font-size:12.5px;font-weight:700;white-space:nowrap}
+.tag{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:999px;font:600 11px var(--f-mono);letter-spacing:.04em;background:color-mix(in srgb,var(--c,var(--cyan)) 16%,transparent);color:var(--c,var(--cyan));border:1px solid color-mix(in srgb,var(--c,var(--cyan)) 40%,transparent);white-space:nowrap}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--line-2),transparent)}
+
+/* top bars */
+.bar{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;gap:10px;position:sticky;top:env(safe-area-inset-top,0px);z-index:20;padding-block:10px;margin-block:-10px 0;background:linear-gradient(var(--bg) 70%,transparent)}
+@media (min-width:520px){.bar{background:linear-gradient(rgba(4,8,23,.96) 70%,transparent)}}
+.bar h2{font-size:19px;text-align:center}
+.bar .c{text-align:center;min-width:0}
+.bar .c .sub{font:600 10.5px var(--f-mono);letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+body::after{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg)}
+
+/* avatar */
+.av{position:relative;flex:none;border-radius:50%;display:grid;place-items:center;overflow:hidden;font-family:var(--f-display);font-weight:700;color:#fff;background:var(--g);box-shadow:inset 0 0 0 2px rgba(255,255,255,.12)}
+.av img{width:100%;height:100%;object-fit:cover}
+.av-wrap{position:relative;flex:none}
+.av-wrap .rk{position:absolute;right:-6px;bottom:-4px}
+
+/* intro */
+.intro{position:fixed;inset:0;z-index:60;background:#02040d;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+.intro svg.scene{width:min(92vw,430px);height:auto;overflow:visible}
+.intro .floor line{stroke:rgba(58,140,255,.35);stroke-width:1}
+.intro .floor{opacity:0;animation:fadeIn .8s ease .1s forwards}
+.intro .pin{transform-box:fill-box;transform-origin:50% 100%;opacity:0;animation:pinDrop .9s cubic-bezier(.3,1.5,.5,1) .45s forwards}
+@keyframes pinDrop{0%{opacity:0;transform:translateY(-160px) scale(.6)}60%{opacity:1}100%{opacity:1;transform:none}}
+.intro .ripple{transform-box:fill-box;transform-origin:center;opacity:0;animation:ripple 2.4s ease-out 1.1s infinite}
+.intro .ripple.r2{animation-delay:1.9s}
+@keyframes ripple{0%{opacity:.9;transform:scale(.3)}100%{opacity:0;transform:scale(1.6)}}
+.intro .orbit{stroke-dasharray:1000;stroke-dashoffset:1000;animation:draw 1.3s ease 1.1s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.intro .sat{transform-box:fill-box;transform-origin:center;opacity:0;animation:pop .55s cubic-bezier(.3,1.7,.5,1) forwards;animation-delay:calc(1.6s + var(--i) * .14s)}
+@keyframes pop{0%{opacity:0;transform:scale(0)}100%{opacity:1;transform:scale(1)}}
+.intro .spin{transform-origin:215px 200px;animation:spin 26s linear 2.6s infinite}
+.intro .word{margin-top:6px;font-family:var(--f-display);font-weight:700;font-size:clamp(34px,10vw,48px);letter-spacing:.32em;padding-left:.32em;background:linear-gradient(90deg,var(--cyan),#c9e9ff,var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent;min-height:1.2em;text-shadow:0 0 30px rgba(58,215,255,.25)}
+.intro .tagline{font-family:var(--f-mono);font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);opacity:0;animation:fadeIn .8s ease 3.4s forwards}
+.intro .timeline{position:absolute;left:24px;right:24px;bottom:calc(28px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:12px;font:600 11px var(--f-mono);color:var(--muted)}
+.intro .track{flex:1;height:3px;border-radius:3px;background:rgba(255,255,255,.1);overflow:hidden}
+.intro .track i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--cyan),var(--violet));transform-origin:left;animation:progress 6s linear forwards}
+@keyframes progress{from{transform:scaleX(0)}}
+.intro .skip{position:absolute;top:calc(20px + env(safe-area-inset-top,0px));right:calc(20px + env(safe-area-inset-right,0px));border:1px solid var(--line-2);background:rgba(255,255,255,.04);color:var(--ink);border-radius:999px;height:36px;padding:0 16px;font:600 12px var(--f-mono);letter-spacing:.12em}
+.scan{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 1px,transparent 1px 3px)}
+@keyframes fadeIn{to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* gate & closed */
+.center-stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:18px;padding-block:24px}
+.beacon{width:150px;height:150px;border-radius:50%;position:relative;display:grid;place-items:center}
+.beacon::before,.beacon::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid var(--cyan);animation:beacon 2.4s ease-out infinite}
+.beacon::after{animation-delay:1.2s}
+@keyframes beacon{from{transform:scale(.45);opacity:1}to{transform:scale(1.15);opacity:0}}
+.beacon .core{width:76px;height:76px;border-radius:24px;background:linear-gradient(135deg,var(--cyan),var(--blue));display:grid;place-items:center;color:#03102a;box-shadow:0 0 40px rgba(58,215,255,.6)}
+.flash{position:fixed;left:50%;top:calc(18px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:90;width:min(420px,calc(100vw - 32px));padding:14px 16px;border-radius:16px;display:flex;gap:12px;align-items:center;background:rgba(10,18,44,.96);border:1px solid var(--line-2);box-shadow:0 20px 50px -14px rgba(0,0,0,.7);animation:flashIn .45s cubic-bezier(.2,1.3,.4,1);font-size:14px}
+.flash.bad{border-color:rgba(255,84,112,.6)}
+.flash.good{border-color:rgba(52,245,197,.55)}
+.flash .fi{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;flex:none;background:rgba(58,215,255,.15);color:var(--cyan)}
+.flash.bad .fi{background:rgba(255,84,112,.15);color:var(--red)}
+.flash.good .fi{background:rgba(52,245,197,.15);color:var(--mint)}
+@keyframes flashIn{from{opacity:0;transform:translate(-50%,-20px) scale(.96)}}
+.shutdown{position:fixed;inset:0;z-index:80;background:#000;animation:crt 1.1s ease forwards;pointer-events:none}
+@keyframes crt{0%{clip-path:inset(0 0 0 0);opacity:0}20%{opacity:.85}70%{clip-path:inset(49.5% 0 49.5% 0);opacity:1}100%{clip-path:inset(49.5% 50% 49.5% 50%);opacity:1}}
+
+/* auth */
+.logo-sm{width:76px;height:76px;border-radius:24px;box-shadow:0 0 40px -6px rgba(58,215,255,.65);border:1px solid var(--line-2)}
+.welcome{font-size:clamp(26px,7.4vw,32px);line-height:1.12}
+.welcome b{background:linear-gradient(90deg,var(--cyan),var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.otp{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.otp input{height:56px;text-align:center;font:700 22px var(--f-mono);border-radius:14px;border:1px solid var(--line-2);background:rgba(3,8,26,.7);color:var(--ink);min-width:0;padding:0;transition:border-color .2s,box-shadow .2s,transform .2s}
+.otp input:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 4px rgba(58,215,255,.15);transform:translateY(-2px)}
+.otp.bad input{border-color:var(--red);animation:shake .4s}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.steps{display:flex;gap:6px}
+.steps i{flex:1;height:4px;border-radius:4px;background:var(--line)}
+.steps i.on{background:linear-gradient(90deg,var(--cyan),var(--violet));box-shadow:0 0 10px rgba(58,215,255,.5)}
+.inbox{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:16px;border:1px dashed rgba(255,181,71,.5);background:rgba(255,181,71,.08);font-size:13px;animation:flashIn .4s ease}
+.inbox b{font:700 18px var(--f-mono);letter-spacing:.2em;color:var(--amber)}
+.meter{height:6px;border-radius:6px;background:var(--line);overflow:hidden}
+.meter i{display:block;height:100%;border-radius:6px;transition:width .4s,background .4s}
+
+/* setup */
+.sec-title{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-weight:700;font-size:16px;letter-spacing:.06em;text-transform:uppercase;color:var(--cyan)}
+.sec-title::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line-2),transparent)}
+.frow{display:flex;flex-direction:column;gap:8px;padding:12px 0;border-bottom:1px dashed var(--line)}
+.frow:last-child{border-bottom:0}
+.frow-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.frow-head .lbl{font-size:13px;font-weight:700}
+.stars{display:flex;gap:6px}
+.stars button{border:0;background:none;padding:2px;color:var(--dim);transition:transform .2s,color .2s}
+.stars button.on{color:var(--amber);filter:drop-shadow(0 0 6px rgba(255,181,71,.7))}
+.stars button:hover{transform:scale(1.15)}
+.photo-pick{display:flex;gap:16px;align-items:center}
+.photo-pick label{cursor:pointer}
+.sticky-foot{position:sticky;bottom:0;z-index:10;padding-block:12px calc(12px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,var(--bg) 35%);display:flex;gap:10px}
+
+/* hub */
+.hero{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding-top:6px}
+.halo{position:relative;width:176px;height:176px;display:grid;place-items:center}
+.halo .ring{position:absolute;inset:0;border-radius:50%;border:2px dashed rgba(58,215,255,.45);animation:spin 22s linear infinite}
+.halo .ring2{position:absolute;inset:14px;border-radius:50%;border:1px solid rgba(155,107,255,.55);animation:spin 14s linear infinite reverse}
+.halo .ring2::before{content:"";position:absolute;top:-5px;left:50%;width:9px;height:9px;margin-left:-4.5px;border-radius:50%;background:var(--violet);box-shadow:0 0 12px var(--violet)}
+.halo .ring::before{content:"";position:absolute;bottom:8%;right:8%;width:10px;height:10px;border-radius:50%;background:var(--cyan);box-shadow:0 0 14px var(--cyan)}
+.halo .rk{position:absolute;right:12px;bottom:14px;z-index:2}
+.hero h1{font-size:26px}
+.rankline{display:flex;align-items:center;gap:8px;font:700 13px var(--f-mono);letter-spacing:.12em;text-transform:uppercase}
+.stats3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:12px 8px;text-align:center}
+.stat b{display:block;font:700 22px var(--f-display);font-variant-numeric:tabular-nums}
+.stat span{font:600 10.5px var(--f-mono);letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tile{position:relative;text-align:left;display:flex;flex-direction:column;gap:10px;padding:16px;border-radius:20px;border:1px solid var(--line);background:linear-gradient(150deg,color-mix(in srgb,var(--c) 16%,rgba(13,24,58,.8)),rgba(13,24,58,.7));color:var(--ink);overflow:hidden;transition:transform .25s cubic-bezier(.3,1.4,.5,1),border-color .25s,box-shadow .25s;animation:screenIn .5s cubic-bezier(.2,.9,.3,1) both;animation-delay:calc(var(--i) * 70ms)}
+.tile:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--c) 70%,transparent);box-shadow:0 18px 40px -20px var(--c)}
+.tile:active{transform:scale(.97)}
+.tile .ti{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 18%,transparent);color:var(--c);border:1px solid color-mix(in srgb,var(--c) 40%,transparent)}
+.tile b{font:700 17px var(--f-display);letter-spacing:.04em}
+.tile small{color:var(--muted);font-size:12.5px}
+.tile::after{content:"";position:absolute;right:-30px;top:-30px;width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--c) 40%,transparent),transparent 70%);opacity:.6}
+.near-card{display:flex;align-items:center;gap:14px;cursor:pointer;text-align:left;width:100%;color:var(--ink)}
+.mini-radar{width:58px;height:58px;border-radius:50%;flex:none;position:relative;border:1px solid var(--line-2);background:radial-gradient(circle,rgba(58,215,255,.12),transparent 70%);overflow:hidden}
+.mini-radar::before{content:"";position:absolute;inset:0;background:conic-gradient(from 0deg,rgba(58,215,255,.55),transparent 25%);animation:spin 2.6s linear infinite}
+.mini-radar i{position:absolute;width:6px;height:6px;border-radius:50%;background:var(--pink);box-shadow:0 0 8px var(--pink)}
+.searchbar{position:sticky;bottom:0;z-index:15;padding-block:10px calc(12px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,var(--bg) 40%)}
+.searchbar button{width:100%;height:54px;display:flex;align-items:center;gap:12px;padding:0 16px;border-radius:18px;border:1px solid var(--line-2);background:rgba(10,18,44,.92);color:var(--muted);text-align:left;box-shadow:0 10px 30px -10px rgba(0,0,0,.6);transition:border-color .2s,box-shadow .25s}
+.searchbar button:hover{border-color:var(--cyan);box-shadow:var(--glow)}
+.searchbar kbd{margin-left:auto;font:600 11px var(--f-mono);color:var(--cyan);border:1px solid var(--line-2);border-radius:8px;padding:3px 7px}
+
+/* drawer */
+.scrim{position:fixed;inset:0;z-index:50;background:rgba(1,3,12,.6);backdrop-filter:blur(3px);animation:fadeIn2 .25s ease}
+@keyframes fadeIn2{from{opacity:0}}
+.drawer{position:fixed;top:0;bottom:0;right:0;z-index:51;width:min(320px,86vw);background:linear-gradient(180deg,#0b1634,#060c22);border-left:1px solid var(--line-2);padding:calc(20px + env(safe-area-inset-top,0px)) calc(18px + env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) 18px;display:flex;flex-direction:column;gap:8px;animation:drawerIn .4s cubic-bezier(.2,1,.3,1);overflow-y:auto}
+@keyframes drawerIn{from{transform:translateX(100%)}}
+.mitem{display:flex;align-items:center;gap:12px;width:100%;padding:13px 12px;border-radius:14px;border:1px solid transparent;background:none;color:var(--ink);text-align:left;font-weight:700;transition:background .2s,border-color .2s}
+.mitem:hover{background:var(--panel-2);border-color:var(--line)}
+.mitem .mi{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:color-mix(in srgb,var(--c,var(--cyan)) 15%,transparent);color:var(--c,var(--cyan))}
+.mitem .cnt{margin-left:auto;font:700 12px var(--f-mono);color:var(--pink)}
+
+/* lists */
+.list{display:flex;flex-direction:column;gap:10px}
+.li{display:flex;align-items:center;gap:12px;padding:12px;border-radius:18px;border:1px solid var(--line);background:var(--panel);width:100%;color:var(--ink);text-align:left;transition:border-color .2s,transform .2s;animation:screenIn .45s cubic-bezier(.2,.9,.3,1) both;animation-delay:calc(var(--i,0) * 40ms)}
+button.li:hover{border-color:var(--line-2);transform:translateX(3px)}
+.li.me{border-color:rgba(58,215,255,.55);box-shadow:inset 0 0 0 1px rgba(58,215,255,.2)}
+.li .nm{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.li .meta{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.li .num{margin-left:auto;text-align:right;flex:none}
+.li .num b{display:block;font:700 18px var(--f-display);font-variant-numeric:tabular-nums}
+.li .num span{font:600 10.5px var(--f-mono);color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.pos{width:30px;text-align:center;font:700 15px var(--f-display);color:var(--muted);flex:none}
+.podium{display:grid;grid-template-columns:1fr 1.15fr 1fr;align-items:end;gap:10px}
+.pod{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;min-width:0;cursor:pointer;background:none;border:0;color:var(--ink);padding:0}
+.pod .base{width:100%;border-radius:16px 16px 6px 6px;border:1px solid var(--line-2);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:10px;font:700 26px var(--f-display);background:linear-gradient(180deg,color-mix(in srgb,var(--c) 30%,transparent),rgba(13,24,58,.4));color:var(--c);animation:grow .8s cubic-bezier(.2,1.2,.4,1) both}
+@keyframes grow{from{transform:scaleY(0);transform-origin:bottom}}
+.pod .nm{font-weight:800;font-size:13px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.seg{display:flex;padding:4px;border-radius:14px;border:1px solid var(--line);background:var(--panel);gap:4px}
+.seg button{flex:1;height:38px;border:0;border-radius:10px;background:none;color:var(--muted);font-weight:700;font-size:13.5px;transition:background .25s,color .25s}
+.seg button.on{background:linear-gradient(120deg,rgba(58,215,255,.22),rgba(155,107,255,.22));color:var(--ink);box-shadow:inset 0 0 0 1px var(--line-2)}
+.cats{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.cats::-webkit-scrollbar{display:none}
+.cat{display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:112px;padding:12px;border-radius:16px;border:1px solid var(--line);background:var(--panel);color:var(--ink);text-align:left;transition:border-color .2s,background .25s,transform .2s;flex:none}
+.cat .ci{color:var(--c)}
+.cat b{font-size:13.5px}
+.cat small{font:600 10.5px var(--f-mono);color:var(--muted)}
+.cat.on{border-color:var(--c);background:color-mix(in srgb,var(--c) 14%,rgba(13,24,58,.8));box-shadow:0 0 22px -8px var(--c)}
+.cat:active{transform:scale(.96)}
+
+/* profile & view */
+.pf-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px dashed var(--line)}
+.pf-row:last-child{border-bottom:0}
+.pf-row .k{font:600 11px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.pf-row .v{font-weight:600;word-break:break-word}
+.pf-row .v.empty{color:var(--dim);font-weight:500;font-style:italic}
+.locked{display:flex;gap:14px;align-items:center;padding:16px;border-radius:18px;border:1px dashed rgba(255,181,71,.5);background:rgba(255,181,71,.06)}
+.locked .li-ic{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:rgba(255,181,71,.15);color:var(--amber);flex:none}
+
+/* missions & titles */
+.bigscore{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}
+.bigscore b{font:700 64px/1 var(--f-display);background:linear-gradient(180deg,#fff,var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent;font-variant-numeric:tabular-nums}
+.catpts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.cp{padding:12px;border-radius:16px;border:1px solid color-mix(in srgb,var(--c) 35%,transparent);background:color-mix(in srgb,var(--c) 9%,rgba(13,24,58,.7));display:flex;flex-direction:column;gap:6px;align-items:flex-start;min-width:0}
+.cp .ci{color:var(--c)}
+.cp b{font:700 22px var(--f-display);font-variant-numeric:tabular-nums}
+.cp span{font:600 10.5px var(--f-mono);letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+.bar-prog{height:10px;border-radius:10px;background:var(--line);overflow:hidden;position:relative}
+.bar-prog i{display:block;height:100%;border-radius:10px;background:linear-gradient(90deg,var(--cyan),var(--violet));box-shadow:0 0 12px rgba(58,215,255,.6);transition:width 1s cubic-bezier(.3,1,.4,1);animation:growX 1s cubic-bezier(.3,1,.4,1)}
+@keyframes growX{from{width:0!important}}
+.ms{display:flex;align-items:center;gap:12px;padding:12px;border-radius:16px;border:1px solid var(--line);background:var(--panel)}
+.ms .mi{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex:none;border:1px solid var(--line-2);color:var(--dim)}
+.ms.done .mi{background:linear-gradient(135deg,var(--cyan),var(--violet));color:#03102a;border:0;box-shadow:0 0 18px -4px var(--cyan)}
+.titles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tcard{position:relative;padding:16px 14px;border-radius:20px;border:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column;gap:8px;align-items:flex-start;overflow:hidden;animation:screenIn .5s both;animation-delay:calc(var(--i) * 60ms)}
+.tcard.own{border-color:var(--c);background:linear-gradient(160deg,color-mix(in srgb,var(--c) 22%,transparent),rgba(13,24,58,.7));box-shadow:0 0 30px -12px var(--c)}
+.tcard .emb{width:50px;height:50px;border-radius:16px;display:grid;place-items:center;color:var(--c);background:color-mix(in srgb,var(--c) 15%,transparent);border:1px solid color-mix(in srgb,var(--c) 45%,transparent)}
+.tcard.own .emb{animation:float 3s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-4px)}}
+.tcard h3{font-size:18px}
+.tcard .holder{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);min-width:0;max-width:100%}
+.tcard .holder span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tcard .own-tag{position:absolute;top:12px;right:12px}
+
+/* radar */
+.radar-wrap{position:relative;width:100%;max-width:400px;margin:0 auto;aspect-ratio:1}
+.radar-wrap svg{width:100%;height:100%;overflow:visible}
+.sweep{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,rgba(58,215,255,.32),rgba(58,215,255,0) 22%);animation:spin 4s linear infinite;pointer-events:none;mask:radial-gradient(circle,#000 70%,transparent 71%);-webkit-mask:radial-gradient(circle,#000 70%,transparent 71%)}
+.blip{position:absolute;transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;border:0;background:none;padding:0;transition:left 1.2s ease,top 1.2s ease;z-index:2}
+.blip .pinb{padding:3px;border-radius:50%;background:var(--c);box-shadow:0 0 16px var(--c);animation:pop .5s cubic-bezier(.3,1.7,.5,1) both;animation-delay:calc(var(--i) * 80ms)}
+.blip .tail{width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--c);margin-top:-2px}
+.blip.sel .pinb{box-shadow:0 0 0 3px #fff,0 0 22px var(--c)}
+.me-dot{position:absolute;left:50%;top:50%;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:var(--cyan);box-shadow:0 0 0 5px rgba(58,215,255,.25),0 0 22px var(--cyan);z-index:3}
+.popup{position:relative;display:flex;gap:12px;align-items:center;padding:14px;border-radius:18px;border:1px solid var(--line-2);background:rgba(10,18,44,.95);animation:flashIn2 .35s cubic-bezier(.2,1.3,.4,1)}
+@keyframes flashIn2{from{opacity:0;transform:translateY(12px) scale(.97)}}
+.gps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font:600 11px var(--f-mono);color:var(--muted)}
+.gps div{padding:8px;border-radius:12px;border:1px solid var(--line);background:var(--panel);min-width:0}
+.gps b{display:block;color:var(--ink);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:30px 16px;color:var(--muted)}
+.empty .ei{width:70px;height:70px;border-radius:22px;display:grid;place-items:center;background:var(--panel-2);border:1px solid var(--line-2);color:var(--cyan);animation:float 3s ease-in-out infinite}
+.spinner{width:22px;height:22px;border-radius:50%;border:2.5px solid rgba(255,255,255,.2);border-top-color:currentColor;animation:spin .8s linear infinite}
+.combo{position:relative}
+.combo .chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.combo .chips:empty{display:none}
+.chipx{display:inline-flex;align-items:center;gap:4px;height:30px;padding:0 6px 0 11px;border-radius:999px;background:rgba(58,215,255,.14);border:1px solid rgba(58,215,255,.45);font-size:12.5px;font-weight:700;animation:pop .3s cubic-bezier(.3,1.6,.5,1)}
+.chipx button{width:22px;height:22px;border-radius:50%;border:0;background:none;color:var(--muted);display:grid;place-items:center;padding:0}
+.chipx button:hover{color:var(--ink);background:rgba(255,255,255,.08)}
+.combo .clear{position:absolute;right:6px;top:6px;width:38px;height:38px;border:0;background:none;color:var(--muted);display:grid;place-items:center;border-radius:10px}
+.combo-list{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:40;list-style:none;margin:0;padding:6px;max-height:260px;overflow-y:auto;border-radius:16px;border:1px solid var(--line-2);background:#0a1438;box-shadow:0 24px 50px -16px rgba(0,0,0,.85);animation:flashIn2 .2s ease}
+.combo-list li button{width:100%;text-align:left;padding:10px 12px;border:0;border-radius:11px;background:none;color:var(--ink);font-size:14px;display:flex;gap:8px;align-items:center}
+.combo-list li button.hi{background:rgba(58,215,255,.14)}
+.combo-list li button mark{background:none;color:var(--cyan);font-weight:800}
+.combo-list .cust{color:var(--amber);font-weight:700;display:inline-flex;gap:6px;align-items:center}
+.combo-list .none{padding:10px 12px;color:var(--muted);font-size:13px}
+.combo-list .count{padding:4px 12px 6px;font:600 10.5px var(--f-mono);letter-spacing:.1em;color:var(--dim);text-transform:uppercase}
+.panel:focus-within{z-index:6}
+.offline{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:70;display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:14px;background:rgba(255,84,112,.16);border:1px solid rgba(255,84,112,.55);color:#ffc2cc;font-size:13px;font-weight:600;width:max-content;max-width:calc(100vw - 32px);backdrop-filter:blur(8px);animation:flashIn2 .3s ease}
+.online-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mint);box-shadow:0 0 8px var(--mint);animation:blinkdot 1.6s ease-in-out infinite;vertical-align:middle}
+@keyframes blinkdot{50%{opacity:.35}}
+.demo-ribbon{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:14px;background:rgba(155,107,255,.1);border:1px solid rgba(155,107,255,.35);font-size:12.5px;color:#cdb8ff}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;animation-delay:0s!important;transition-duration:.001ms!important}}
+</style>
+
+<div id="root"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/htm@3.1.1/dist/htm.umd.js"></script>
+<script>
+/* =====================================================================
+   ANTARYAMI — campus geo-social app
+   CONFIG: paste your Firebase web config below to switch from DEMO mode
+   (local example data) to LIVE mode (real accounts, OTP email, live map).
+   ===================================================================== */
+const FIREBASE_CONFIG = null; /* e.g. {apiKey:"…", authDomain:"…", projectId:"…", appId:"…"} */
+const FUNCTIONS_REGION = 'asia-south1';
+const INSTITUTE_EMAIL = /@([a-z0-9-]+\.)*(iitr\.ac\.in|ac\.in|edu|edu\.in)$/i;
+const APP_VERSION = '1.0.0';
+const CREATOR = {name:'Team Antaryami', place:'IIT Roorkee', note:'Built for students who want to know their campus, and be known by it.'};
+const RADIUS_M = 20;
+const HEARTBEAT_MS = 30000;          /* online students send their location every 30 s */
+const ONLINE_WINDOW_MS = 75000;      /* shown on the map only if seen in the last 75 s */
+const VISIT_COOLDOWN_MIN = 60;
+const OTP_COOLDOWN_S = 60;
+const LOGO = 'data:image/jpeg;base64,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';
+const DEMO_LOC = {lat:29.86472, lng:77.89664, acc:12};
+
+const {useState,useEffect,useMemo,useRef,useCallback} = React;
+const html = htm.bind(React.createElement);
+
+/* ---------- icons ---------- */
+const P = {
+  pin:'<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+  menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+  trophy:'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/>',
+  target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
+  award:'<circle cx="12" cy="9" r="6"/><path d="m8.5 14.2-1.5 7.8 5-3 5 3-1.5-7.8"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>',
+  eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  lock:'<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+  unlock:'<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/>',
+  x:'<path d="M18 6 6 18M6 6l12 12"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  left:'<path d="m15 18-6-6 6-6"/>',
+  right:'<path d="m9 18 6-6-6-6"/>',
+  logout:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>',
+  info:'<circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/>',
+  edit:'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
+  camera:'<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3"/>',
+  mail:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/>',
+  key:'<circle cx="7.5" cy="15.5" r="4.5"/><path d="m21 2-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/>',
+  hash:'<path d="M4 9h16M4 15h16M10 3 8 21M16 3l-2 18"/>',
+  ghost:'<path d="M9 10h.01M15 10h.01M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z"/>',
+  bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+  gamepad:'<path d="M6 11h4M8 9v4M15 12h.01M18 10h.01"/><rect x="2" y="6" width="20" height="12" rx="6"/>',
+  code:'<path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/>',
+  book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>',
+  users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+  sports:'<circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5.6 5.6c3.5 3.5 3.5 9.3 0 12.8M18.4 5.6c-3.5 3.5-3.5 9.3 0 12.8"/>',
+  grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+  star:'<path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/>',
+  refresh:'<path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  cross:'<circle cx="12" cy="12" r="9"/><path d="M22 12h-4M6 12H2M12 6V2M12 22v-4"/>',
+  shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+  spark:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16l.7 1.8 1.8.7-1.8.7L19 21l-.7-1.8-1.8-.7 1.8-.7z"/>',
+  send:'<path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>',
+  power:'<path d="M12 2v10"/><path d="M18.4 6.6a9 9 0 1 1-12.8 0"/>',
+  alert:'<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',
+  radar:'<path d="M19.07 4.93A10 10 0 1 0 22 12"/><path d="M16.24 7.76A6 6 0 1 0 18 12"/><circle cx="12" cy="12" r="2"/><path d="m13.4 10.6 6.2-6.2"/>',
+  heart:'<path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7Z"/>',
+  home:'<path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>',
+  flag:'<path d="M4 22V4a1 1 0 0 1 1-1h13l-3 5 3 5H5"/>',
+  plus2:'<path d="M12 5v14M5 12h14"/>',
+  wifiOff:'<path d="M12 20h.01M8.5 16.4a5 5 0 0 1 7 0M2 8.8a15 15 0 0 1 4.2-2.6M10.7 5.1A15 15 0 0 1 22 8.8M5 12.9a10 10 0 0 1 5.2-2.7M16.8 11.5a10 10 0 0 1 2.2 1.4M2 2l20 20"/>'
+};
+function Icon({n,s=20,sw=2,c}){return html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth=${sw} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style=${c?{color:c}:undefined} dangerouslySetInnerHTML=${{__html:P[n]}}></svg>`;}
+
+/* ---------- domain constants ---------- */
+/* Pick-lists for profile setup (IIT Roorkee). Every list also accepts a custom entry. */
+const L = {
+  departments:['Architecture and Planning','Biosciences and Bioengineering','Chemical Engineering','Chemistry','Civil Engineering','Computer Science and Engineering','Data Science and Artificial Intelligence','Design','Earth Sciences','Earthquake Engineering','Electrical Engineering','Electronics and Communication Engineering','Humanities and Social Sciences','Hydro and Renewable Energy','Hydrology','Management Studies','Mathematics','Mechanical and Industrial Engineering','Metallurgical and Materials Engineering','Paper Technology','Physics','Polymer and Process Engineering','Water Resources Development and Management','Centre of Nanotechnology','Centre for Transportation Systems'],
+  branches:['Biosciences and Bioengineering','Chemical Engineering','Civil Engineering','Computer Science and Engineering','Data Science and Artificial Intelligence','Electrical Engineering','Electronics and Communication Engineering','Engineering Physics','Mechanical Engineering','Metallurgical and Materials Engineering','Production and Industrial Engineering','Architecture','Physics (BS-MS)','Mathematics and Computing (BS-MS)','Chemical Sciences (BS-MS)','Economics (BS-MS)','Geological Technology (Int. M.Tech)','Geophysical Technology (Int. M.Tech)'],
+  courses:['B.Tech','B.Arch','BS-MS (Dual Degree)','Integrated M.Tech','M.Tech','M.Sc','M.Arch','M.Plan','MBA','PhD'],
+  years:['1st Year','2nd Year','3rd Year','4th Year','5th Year','PG','PhD'],
+  bhawans:['Azad Bhawan','Cautley Bhawan','Ganga Bhawan','Govind Bhawan','Jawahar Bhawan','Rajendra Bhawan','Radhakrishnan Bhawan','Rajiv Bhawan','Ravindra Bhawan','Malviya Bhawan','New Vigyan Kunj (Boys)','New Vigyan Kunj (Girls)','Sarojini Bhawan','Kasturba Bhawan','Himalaya Bhawan','Indira Bhawan','A.N. Khosla International House','Day scholar / off campus'],
+  canteens:['Bhawan mess canteen','Bhawan night canteen','Nescafé','Main canteen','Amul parlour','Off-campus food'],
+  subjects:['Mathematics','Physics','Chemistry','Programming','Data Structures and Algorithms','Engineering Graphics','Electrical Science','Electronics','Digital Electronics','Signals and Systems','Network Theory','Communication Systems','Control Systems','Microprocessors','Machine Learning','Artificial Intelligence','Computer Networks','Operating Systems','Databases','Thermodynamics','Fluid Mechanics','Mechanics','Strength of Materials','Material Science','Biology','Economics','Architecture Design Studio','Management'],
+  sports:['Athletics','Badminton','Basketball','Chess','Cricket','Football','Hockey','Kabaddi','Kho-Kho','Lawn Tennis','Squash','Swimming','Table Tennis','Volleyball','Handball','Weightlifting','Powerlifting','Boxing','Taekwondo','Archery','Cycling','Skating','Yoga','Gym','Carrom','Esports'],
+  hobbies:['Coding','Reading','Writing','Poetry','Music','Singing','Guitar','Keyboard','Drums','Dancing','Drawing','Painting','Sketching','Photography','Videography','Video editing','Film-making','Watching movies','Anime','Travelling','Trekking','Cooking','Gardening','Gym','Chess','Gaming','BGMI','Valorant','Free Fire','COD Mobile','Counter-Strike 2','EA FC / FIFA','Clash of Clans','Minecraft','Robotics','Electronics projects','Stand-up comedy','Public speaking','Volunteering','Blogging','Podcasts','Quizzing','Debating'],
+  skills:['Competitive programming','Web development','App development','Machine learning','Data science','Cybersecurity','UI/UX design','Graphic design','Video editing','Photography','Content writing','Public speaking','Leadership','Event management','Marketing','Finance','Stock trading','CAD / SolidWorks','3D printing','Embedded systems','Circuit design','Robotics','Blockchain','Game development','Cloud / DevOps','Singing','Dancing','Acting','Anchoring','Teaching','Languages'],
+  clubs:['SDSLabs','IMG (Information Management Group)','Programming and Algorithmic Group','Data Science Group','Vision and Language Group','STIFKI','GIL (Group for Interactive Learning)','EDC (Entrepreneurship Development Cell)','Himalayan Explorers Club','Hobbies Club','Team Robocon','IIT Roorkee Motorsports','Kshitij','Literary Society','Cultural Society','Spic Macay','ShARE','IEEE Student Branch','SAE Collegiate Club','ASME Student Section','IIChE Student Chapter','AAPG Student Chapter','SEG Student Chapter','Watch Out! (news)','Geek Gazette','IIT Heartbeat','Music Section','Dance Section','Dramatics Section','Fine Arts Section','Photography Section','Cinematic Section','Debating Society','Quizzing Society','NSS','NCC','NSO','Thomso team','Cognizance team','E-Summit team','Sangram team'],
+  fests:['Thomso','Cognizance','E-Summit','Sangram','National Social Summit','Srishti','Confluencia'],
+  verticals:['Events','Marketing','Sponsorship','Public Relations','Design','Media and Publicity','Content','Web and Tech','Hospitality','Logistics','Finance','Security','Production','Core team'],
+  cocurricular:['Debating','Quizzing','MUN','Theatre','Volunteering','Social service','Student government','Mentorship','Teaching / tutoring','Open source','Research projects','Paper presentation','Case competitions','Olympiads','Workshops'],
+  awards:['Institute merit scholarship','Department rank','Dean\'s list','JEE rank holder','Olympiad medal','KVPY / INSPIRE scholar','Research paper','Best project award'],
+  hackathons:['Smart India Hackathon','Inter IIT Tech Meet','ETHIndia','HackMIT','Google Solution Challenge','Flipkart GRiD','Amazon ML Challenge','Cognizance hackathon','MLH hackathon']
+};
+L.festVerticals = L.fests.flatMap(f=>L.verticals.map(v=>f+' – '+v));
+const SECTIONS = [
+  {t:'Identity',f:[['name','Name'],['gender','Gender','select',['Male','Female','Non-binary','Prefer not to say']],['age','Age','number'],['phone','Phone No','tel'],['email','Email','email'],['address','Resident Address'],['instagram','Instagram ID','text','@yourhandle']]},
+  {t:'Academics',f:[['department','Department','combo','departments'],['branch','Branch','combo','branches'],['year','Year','select',L.years],['course','Class / Course','combo','courses'],['bestSubject','Best Subject in Academics','combo','subjects'],['cgpa','CGPA','text','8.70'],['intern','Internship','select',['Yes','No','Not applicable']],['academicAwards','Academic Awards','multi','awards']]},
+  {t:'Campus Life',f:[['hostel','Hostel','combo','bhawans'],['room','Room','text','B-214'],['messRating','Mess Food Rating','rating'],['canteen','Favourite Canteen','combo','canteens'],['hobbies','Hobbies','multi','hobbies'],['bestSkill','Best Skill','combo','skills'],['extraSkill','Extra Skill','multi','skills'],['bestSports','Best Sports','multi','sports']]},
+  {t:'Clubs & Fests',f:[['clubPast','Club · Past','multi','clubs'],['clubPresent','Club · Present','multi','clubs'],['clubTarget','Club · Target','multi','clubs'],['festVertical','Fest + Vertical','multi','festVerticals'],['nccNssNso','NCC / NSS / NSO','select',['NCC','NSS','NSO','None']],['coCurricular','Co-curricular Activities','multi','cocurricular']]},
+  {t:'Achievements',f:[['nonAcademicAwards','Non-academic Awards','area'],['sociothon','Sociothon'],['hackathon','Hackathon','multi','hackathons']]},
+  {t:'Personal',f:[['relationship','Single / In a relationship','select',['Single','In a relationship',"It's complicated",'Prefer not to say']],['wantPartner','Want a GF / BF','select',['Yes','No','Maybe']]]}
+];
+const FIELDS = SECTIONS.flatMap(s=>s.f.map(f=>({key:f[0],label:f[1],type:f[2]||'text',opt:Array.isArray(f[3])?f[3]:(f[2]==='combo'||f[2]==='multi')?L[f[3]]:null,ph:typeof f[3]==='string'&&f[2]!=='combo'&&f[2]!=='multi'?f[3]:''})));
+const FIELD = Object.fromEntries(FIELDS.map(f=>[f.key,f]));
+const PRIVATE_DEFAULT = new Set(['phone','email','address','age','room','cgpa','relationship','wantPartner']);
+const defaultPrivacy = ()=>Object.fromEntries(FIELDS.map(f=>[f.key,!PRIVATE_DEFAULT.has(f.key)]));
+const CATS = [
+  {id:'all',label:'All Categories',short:'All',icon:'grid',c:'var(--cyan)',pts:1},
+  {id:'sports',label:'Sports',short:'Sports',icon:'sports',c:'var(--amber)',pts:2},
+  {id:'academic',label:'Academic',short:'Academic',icon:'book',c:'var(--mint)',pts:2},
+  {id:'clubs',label:'Clubs',short:'Clubs',icon:'users',c:'var(--violet)',pts:2},
+  {id:'hackathon',label:'Hackathon',short:'Hackathon',icon:'code',c:'var(--pink)',pts:2},
+  {id:'esports',label:'Esports',short:'Esports',icon:'gamepad',c:'var(--blue)',pts:2}
+];
+const CATMAP = Object.fromEntries(CATS.map(c=>[c.id,c]));
+const STAT_KEYS = ['open','sports','academic','clubs','hackathon','esports'];
+const TITLES = [
+  {id:'sikandar',name:'Sikandar',key:'sports',cat:'Most Sports-search visits',icon:'sports',c:'var(--amber)'},
+  {id:'bazigar',name:'Bazigar',key:'academic',cat:'Most Academic-search visits',icon:'book',c:'var(--mint)'},
+  {id:'clubstar',name:'Club Star',key:'clubs',cat:'Most Club-search visits',icon:'users',c:'var(--violet)'},
+  {id:'hacker',name:'Hacker',key:'hackathon',cat:'Most Hackathon-search visits',icon:'code',c:'var(--pink)'},
+  {id:'gamer',name:'Gamer',key:'esports',cat:'Most Esports-search visits',icon:'gamepad',c:'var(--blue)'},
+  {id:'superstar',name:'Superstar',key:'views',cat:'Most profile views overall',icon:'star',c:'var(--cyan)'}
+];
+const RANKS = [
+  {n:'Bronze',a:'B',min:0,c1:'#e0a27a',c2:'#8a4f2c'},
+  {n:'Silver',a:'S',min:10,c1:'#f1f6ff',c2:'#7b8aa5'},
+  {n:'Gold',a:'G',min:25,c1:'#ffe27a',c2:'#c98a10'},
+  {n:'Platinum',a:'P',min:50,c1:'#a8fff3',c2:'#1aa596'},
+  {n:'Diamond',a:'D',min:80,c1:'#a9d2ff',c2:'#2f6bff'},
+  {n:'Heroic',a:'H',min:120,c1:'#ff9a8a',c2:'#d0213d'},
+  {n:'Elite Heroic',a:'EH',min:170,c1:'#ff9ad4',c2:'#b3127a'},
+  {n:'Master',a:'M',min:240,c1:'#d6b8ff',c2:'#6b2fff'},
+  {n:'Elite Master',a:'EM',min:320,c1:'#f2a8ff',c2:'#8b10c9'},
+  {n:'Grandmaster',a:'GM',min:450,c1:'#fff1a8',c2:'#ff4fb0'}
+];
+const rankOf = pts=>{let r=RANKS[0],i=0;RANKS.forEach((x,j)=>{if(pts>=x.min){r=x;i=j;}});return {...r,i};};
+
+/* ---------- helpers ---------- */
+const sleep = ms=>new Promise(r=>setTimeout(r,ms));
+const monthKey = (d=new Date())=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+const daysLeftInMonth = ()=>{const d=new Date();return new Date(d.getFullYear(),d.getMonth()+1,0).getDate()-d.getDate();};
+const ago = t=>{const s=Math.max(1,Math.round((Date.now()-t)/1000));if(s<60)return s+'s ago';const m=Math.round(s/60);if(m<60)return m+' min ago';const h=Math.round(m/60);if(h<24)return h+' h ago';const d=Math.round(h/24);return d===1?'yesterday':d+' days ago';};
+const hashStr = s=>{let h=2166136261;for(const ch of String(s))h=Math.imul(h^ch.charCodeAt(0),16777619);return h>>>0;};
+const initials = n=>(n||'?').trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase()||'?';
+const gradFor = s=>{const h=hashStr(s)%360;return `linear-gradient(135deg,hsl(${h} 90% 58%),hsl(${(h+60)%360} 85% 45%))`;};
+async function sha(s){try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');}catch(e){return 'h'+hashStr(s);}}
+function distM(a,b){const R=6371000,r=Math.PI/180,dLat=(b.lat-a.lat)*r,dLng=(b.lng-a.lng)*r;const x=Math.sin(dLat/2)**2+Math.cos(a.lat*r)*Math.cos(b.lat*r)*Math.sin(dLng/2)**2;return 2*R*Math.asin(Math.sqrt(x));}
+function bearing(a,b){const r=Math.PI/180,y=Math.sin((b.lng-a.lng)*r)*Math.cos(b.lat*r),x=Math.cos(a.lat*r)*Math.sin(b.lat*r)-Math.sin(a.lat*r)*Math.cos(b.lat*r)*Math.cos((b.lng-a.lng)*r);return Math.atan2(y,x);}
+const offsetLoc = (o,dx,dy)=>({lat:o.lat+dy/111320,lng:o.lng+dx/(111320*Math.cos(o.lat*Math.PI/180))});
+function inCategory(u,cat){
+  const p=u.pub||{};
+  if(cat==='all')return true;
+  if(cat==='sports')return !!p.bestSports;
+  if(cat==='academic')return !!(p.bestSubject||p.academicAwards||p.cgpa);
+  if(cat==='clubs')return !!(p.clubPast||p.clubPresent||p.clubTarget||p.festVertical);
+  if(cat==='hackathon')return !!p.hackathon;
+  if(cat==='esports')return /(game|gaming|esport|bgmi|valorant|free ?fire|cs ?go|csgo|pubg|cod|fifa|dota|chess)/i.test([p.hobbies,p.extraSkill,p.bestSkill,p.bestSports].join(' '));
+  return false;
+}
+function publicOf(profile,privacy){const pub={};let privateCount=0;FIELDS.forEach(f=>{const v=profile[f.key];if(v===undefined||v===null||v==='')return;if(privacy[f.key]===false)privateCount++;else pub[f.key]=v;});return {pub,privateCount};}
+async function resizeImage(file,max=320){
+  const url=URL.createObjectURL(file);
+  try{const img=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=url;});
+    const s=Math.min(1,max/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);
+    c.getContext('2d').drawImage(img,0,0,c.width,c.height);return c.toDataURL('image/jpeg',.82);}finally{URL.revokeObjectURL(url);}
+}
+const zeroStats = ()=>({views:0,open:0,sports:0,academic:0,clubs:0,hackathon:0,esports:0});
+class AppError extends Error{constructor(code,msg){super(msg);this.code=code;}}
+
+/* =====================================================================
+   DEMO BACKEND — everything runs in this browser with example students
+   ===================================================================== */
+const DEMO_KEY='antaryami-demo-v1';
+class DemoBackend{
+  constructor(){this.mode='demo';this.load();}
+  load(){let s=null;try{s=JSON.parse(localStorage.getItem(DEMO_KEY));}catch(e){}if(!s||s.v!==2)s=this.seed();this.s=s;this.monthCheck();}
+  save(){try{localStorage.setItem(DEMO_KEY,JSON.stringify(this.s));}catch(e){}}
+  seed(){
+    return {v:2,month:monthKey(),users:{},stats:{},visits:{},requests:{},grants:{},guard:{},otps:{},session:null,ghost:{}};
+  }
+  monthCheck(){const m=monthKey();if(this.s.month!==m){Object.keys(this.s.stats).forEach(k=>this.s.stats[k]=zeroStats());this.s.month=m;this.save();}}
+  async restore(){return this.s.session&&this.s.users[this.s.session]?this.s.session:null;}
+  async sendOtp(email){
+    email=email.trim().toLowerCase();
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))throw new AppError('invalid','Enter a valid email address.');
+    if(!INSTITUTE_EMAIL.test(email))throw new AppError('domain','Use your institute email (ending in .ac.in or .edu).');
+    if(Object.values(this.s.users).some(u=>u.email===email))throw new AppError('exists','An account already uses this email. Log in instead.');
+    const o=this.s.otps[email];
+    if(o&&Date.now()-o.sent<OTP_COOLDOWN_S*1000)throw new AppError('cooldown',`Wait ${Math.ceil((OTP_COOLDOWN_S*1000-(Date.now()-o.sent))/1000)} s before asking for another code.`);
+    await sleep(700);
+    const code=String(Math.floor(100000+Math.random()*900000));
+    this.s.otps[email]={code,sent:Date.now(),exp:Date.now()+10*60000,attempts:0};this.save();
+    return {cooldown:OTP_COOLDOWN_S,demoCode:code};
+  }
+  checkCode(email,code,consume){
+    const o=this.s.otps[email.trim().toLowerCase()];
+    if(!o)throw new AppError('none','Request a code first.');
+    if(Date.now()>o.exp)throw new AppError('expired','This code has expired. Tap Resend for a new one.');
+    if(o.attempts>=5)throw new AppError('locked','Too many wrong tries. Tap Resend for a new code.');
+    if(o.code!==code){o.attempts++;this.save();throw new AppError('wrong',`Wrong code. ${5-o.attempts} tries left.`);}
+    if(consume){delete this.s.otps[email];this.save();}
+  }
+  async checkOtp(email,code){await sleep(500);this.checkCode(email,code,false);return true;}
+  async completeSignup({email,code,enrollment,password}){
+    await sleep(600);email=email.trim().toLowerCase();
+    if(Object.values(this.s.users).some(u=>u.enrollment===enrollment))throw new AppError('enr','This enrollment number is already registered.');
+    this.checkCode(email,code,true);
+    const uid='u'+Date.now().toString(36);
+    this.s.users[uid]={uid,enrollment,email,passHash:await sha(enrollment+':'+password),profile:{email},privacy:defaultPrivacy(),photo:'',off:null};
+    this.s.stats[uid]=zeroStats();
+    this.s.session=uid;this.save();return uid;
+  }
+  async login(enrollment,password){
+    await sleep(600);
+    const u=Object.values(this.s.users).find(x=>x.enrollment===enrollment.trim());
+    if(!u||!u.passHash)throw new AppError('notfound','Your account is not found.');
+    if(u.passHash!==await sha(u.enrollment+':'+password))throw new AppError('pass','Incorrect password. Try again.');
+    this.s.session=u.uid;this.save();return u.uid;
+  }
+  async resetPassword(enrollment){await sleep(400);const u=Object.values(this.s.users).find(x=>x.enrollment===enrollment.trim());if(!u||!u.passHash)throw new AppError('notfound','Your account is not found.');return u.email;}
+  async logout(){this.s.session=null;this.save();}
+  async reauth(password){const u=this.s.users[this.s.session];await sleep(300);if(u.passHash!==await sha(u.enrollment+':'+password))throw new AppError('pass','Incorrect password.');}
+  async getMine(){const u=this.s.users[this.s.session];return {uid:u.uid,enrollment:u.enrollment,email:u.email,profile:{...u.profile},privacy:{...defaultPrivacy(),...u.privacy},photo:u.photo};}
+  async saveProfile(profile,privacy,photo){const u=this.s.users[this.s.session];u.profile=profile;u.privacy=privacy;u.photo=photo;this.save();}
+  card(u){const {pub,privateCount}=publicOf(u.profile,u.privacy);return {uid:u.uid,name:u.profile.name||'Student '+u.enrollment.slice(-3),photo:u.photo,pub,privateCount,stats:{...zeroStats(),...this.s.stats[u.uid]}};}
+  async listUsers(){return Object.values(this.s.users).map(u=>this.card(u));}
+  async getPrivate(uid){if(uid===this.s.session||(this.s.grants[uid]||[]).includes(this.s.session))return {...this.s.users[uid].profile};return null;}
+  async recordVisit(target,source,category){
+    const me=this.s.session;if(!me||target===me)return {counted:false,self:true};
+    const g=me+'_'+target,last=this.s.guard[g]||0;
+    if(Date.now()-last<VISIT_COOLDOWN_MIN*60000)return {counted:false};
+    this.s.guard[g]=Date.now();
+    const st=this.s.stats[target]=this.s.stats[target]||zeroStats();st.views++;
+    let pts=0;if(source==='search'){pts=category==='all'?1:2;st[category==='all'?'open':category]+=pts;}
+    (this.s.visits[target]=this.s.visits[target]||[]).push({by:me,at:Date.now(),category:source==='search'?category:source});
+    this.save();return {counted:true,pts};
+  }
+  async visits(){return (this.s.visits[this.s.session]||[]).slice().sort((a,b)=>b.at-a.at);}
+  async requestAccess(uid){const me=this.s.session;(this.s.requests[uid]=this.s.requests[uid]||{})[me]={status:'pending',at:Date.now()};this.save();}
+  async requestStatus(uid){const r=this.s.requests[uid]&&this.s.requests[uid][this.s.session];return r?r.status:'none';}
+  async incoming(){const box=this.s.requests[this.s.session]||{};return Object.entries(box).filter(([,r])=>r.status==='pending').map(([uid,r])=>({uid,at:r.at}));}
+  async respond(uid,ok){const me=this.s.session,r=(this.s.requests[me]||{})[uid];if(!r)return;r.status=ok?'approved':'denied';if(ok){(this.s.grants[me]=this.s.grants[me]||[]);if(!this.s.grants[me].includes(uid))this.s.grants[me].push(uid);}this.save();}
+  async setGhost(b){this.s.ghost[this.s.session]=b;this.save();}
+  async getGhost(){return !!this.s.ghost[this.s.session];}
+  async updateLocation(){}
+  async goOffline(){}
+  async nearby(){return [];}   /* preview runs on one device only: nobody else can be online */
+}
+
+/* =====================================================================
+   FIREBASE BACKEND — used when FIREBASE_CONFIG is set (see README)
+   ===================================================================== */
+function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=()=>rej(new Error('Could not load '+src));document.head.appendChild(s);});}
+const fbMsg = e=>{const c=(e&&e.code)||'';const m={'auth/invalid-credential':'Incorrect password. Try again.','auth/wrong-password':'Incorrect password. Try again.','auth/too-many-requests':'Too many attempts. Wait a minute and try again.','auth/network-request-failed':'No internet connection.','permission-denied':'You do not have access to this.'};return m[c]||(e&&e.message)||'Something went wrong.';};
+class FirebaseBackend{
+  constructor(cfg){this.mode='live';this.cfg=cfg;}
+  async init(){
+    const v='10.12.2',b=`https://cdn.jsdelivr.net/npm/firebase@${v}/`;
+    for(const f of ['firebase-app-compat.js','firebase-auth-compat.js','firebase-firestore-compat.js','firebase-functions-compat.js'])await loadScript(b+f);
+    firebase.initializeApp(this.cfg);this.auth=firebase.auth();this.db=firebase.firestore();this.fns=firebase.app().functions(FUNCTIONS_REGION);
+    await this.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+  }
+  call(name,data){return this.fns.httpsCallable(name)(data).then(r=>r.data).catch(e=>{throw new AppError(e.code,e.message);});}
+  get uid(){return this.auth.currentUser&&this.auth.currentUser.uid;}
+  async restore(){await new Promise(r=>{const u=this.auth.onAuthStateChanged(()=>{u();r();});});const u=this.auth.currentUser;return u&&u.emailVerified?u.uid:null;}
+  async sendOtp(email){return this.call('sendOtp',{email:email.trim().toLowerCase()});}
+  async checkOtp(email,code){await this.call('checkOtp',{email:email.trim().toLowerCase(),code});return true;}
+  async completeSignup({email,code,enrollment,password}){
+    email=email.trim().toLowerCase();
+    await this.call('completeSignup',{email,code,enrollment,password});
+    const c=await this.auth.signInWithEmailAndPassword(email,password);return c.user.uid;
+  }
+  async login(enrollment,password){
+    const d=await this.db.collection('enrollments').doc(enrollment.trim()).get();
+    if(!d.exists)throw new AppError('notfound','Your account is not found.');
+    try{const c=await this.auth.signInWithEmailAndPassword(d.data().email,password);return c.user.uid;}catch(e){throw new AppError(e.code,fbMsg(e));}
+  }
+  async resetPassword(enrollment){const d=await this.db.collection('enrollments').doc(enrollment.trim()).get();if(!d.exists)throw new AppError('notfound','Your account is not found.');await this.auth.sendPasswordResetEmail(d.data().email);return d.data().email;}
+  async logout(){try{await this.goOffline();}catch(e){}await this.auth.signOut();}
+  async reauth(password){const u=this.auth.currentUser;try{await u.reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(u.email,password));}catch(e){throw new AppError(e.code,fbMsg(e));}}
+  async getMine(){
+    const [pub,priv]=await Promise.all([this.db.doc('users/'+this.uid).get(),this.db.doc(`users/${this.uid}/private/all`).get()]);
+    const p=priv.exists?priv.data():{};const d=pub.data()||{};
+    return {uid:this.uid,enrollment:d.enrollment,email:this.auth.currentUser.email,profile:p.profile||{email:this.auth.currentUser.email},privacy:{...defaultPrivacy(),...(p.privacy||{})},photo:d.photo||''};
+  }
+  async saveProfile(profile,privacy,photo){
+    const {pub,privateCount}=publicOf(profile,privacy);
+    await this.db.doc(`users/${this.uid}/private/all`).set({profile,privacy});
+    await this.db.doc('users/'+this.uid).update({name:profile.name||'',photo:photo||'',pub,privateCount,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+  }
+  async listUsers(){
+    const [us,ss]=await Promise.all([this.db.collection('users').limit(1000).get(),this.db.collection('stats').limit(1000).get()]);
+    const st={};ss.forEach(d=>st[d.id]=d.data());
+    const out=[];us.forEach(d=>{const u=d.data();out.push({uid:d.id,name:u.name||'Student '+String(u.enrollment||'').slice(-3),photo:u.photo||'',pub:u.pub||{},privateCount:u.privateCount||0,stats:{...zeroStats(),...(st[d.id]||{})}});});
+    return out;
+  }
+  async getPrivate(uid){try{const d=await this.db.doc(`users/${uid}/private/all`).get();return d.exists?d.data().profile:null;}catch(e){return null;}}
+  async recordVisit(target,source,category){return this.call('recordVisit',{target,source,category});}
+  async visits(){const q=await this.db.collection(`users/${this.uid}/visits`).orderBy('at','desc').limit(300).get();const out=[];q.forEach(d=>{const v=d.data();out.push({by:v.by,at:v.at&&v.at.toMillis?v.at.toMillis():Date.now(),category:v.category});});return out;}
+  async requestAccess(uid){await this.db.doc(`requests/${uid}/in/${this.uid}`).set({status:'pending',at:firebase.firestore.FieldValue.serverTimestamp()});}
+  async requestStatus(uid){const d=await this.db.doc(`requests/${uid}/in/${this.uid}`).get();return d.exists?d.data().status:'none';}
+  async incoming(){const q=await this.db.collection(`requests/${this.uid}/in`).where('status','==','pending').get();const out=[];q.forEach(d=>{const v=d.data();out.push({uid:d.id,at:v.at&&v.at.toMillis?v.at.toMillis():Date.now()});});return out;}
+  async respond(uid,ok){const b=this.db.batch();b.update(this.db.doc(`requests/${this.uid}/in/${uid}`),{status:ok?'approved':'denied',decidedAt:firebase.firestore.FieldValue.serverTimestamp()});if(ok)b.set(this.db.doc(`users/${this.uid}/grants/${uid}`),{at:firebase.firestore.FieldValue.serverTimestamp()});await b.commit();}
+  async setGhost(g){this.ghost=g;await this.db.doc('presence/'+this.uid).set({ghost:g},{merge:true});}
+  async getGhost(){const d=await this.db.doc('presence/'+this.uid).get();return !!(d.exists&&d.data().ghost);}
+  async updateLocation(loc){if(!this.uid)return;await this.db.doc('presence/'+this.uid).set({lat:loc.lat,lng:loc.lng,acc:loc.acc||null,online:true,at:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});}
+  async goOffline(){if(!this.uid)return;await this.db.doc('presence/'+this.uid).set({online:false,at:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});}
+  async nearby(){
+    const since=firebase.firestore.Timestamp.fromMillis(Date.now()-ONLINE_WINDOW_MS);
+    const [q,users]=await Promise.all([this.db.collection('presence').where('at','>',since).get(),this.listUsers()]);
+    const byId=Object.fromEntries(users.map(u=>[u.uid,u]));const out=[];
+    q.forEach(d=>{const p=d.data();if(d.id===this.uid||p.ghost||p.online===false||p.lat==null||!byId[d.id])return;out.push({...byId[d.id],lat:p.lat,lng:p.lng,at:p.at.toMillis()});});
+    return out;
+  }
+}
+
+/* ---------- scoring ---------- */
+function computeBoard(users){
+  const holders={};
+  TITLES.forEach(t=>{let best=null;users.forEach(u=>{const v=u.stats[t.key]||0;if(v>0&&(!best||v>best.v))best={uid:u.uid,v};});if(best)holders[t.id]=best.uid;});
+  const rows=users.map(u=>{
+    const s=u.stats,visitPts=STAT_KEYS.reduce((a,k)=>a+(s[k]||0),0),viewBonus=Math.floor((s.views||0)/5);
+    const titles=TITLES.filter(t=>holders[t.id]===u.uid);
+    const total=visitPts+viewBonus+titles.length*5;
+    return {...u,visitPts,viewBonus,titles,total,rank:rankOf(total)};
+  }).sort((a,b)=>b.total-a.total||b.stats.views-a.stats.views);
+  rows.forEach((r,i)=>r.pos=i+1);
+  return {rows,byId:Object.fromEntries(rows.map(r=>[r.uid,r])),holders};
+}
+
+/* ---------- shared components ---------- */
+function Avatar({u,s=48}){
+  const name=(u&&u.name)||'?';
+  return html`<div className="av" style=${{width:s+'px',height:s+'px','--g':gradFor(name+(u&&u.uid)),fontSize:Math.round(s*.36)+'px'}}>${u&&u.photo?html`<img src=${u.photo} alt=""/>`:initials(name)}</div>`;
+}
+function RankBadge({r,s=34}){
+  const id='rg'+r.i+'_'+s;
+  return html`<svg width=${s} height=${s} viewBox="0 0 40 40" role="img" aria-label=${r.n+' rank'} style=${{filter:`drop-shadow(0 0 ${s/6}px ${r.c2})`}}>
+    <defs><linearGradient id=${id} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor=${r.c1}/><stop offset="1" stopColor=${r.c2}/></linearGradient></defs>
+    <path d="M20 2 36 11v18L20 38 4 29V11Z" fill=${'url(#'+id+')'} stroke="#fff" strokeOpacity=".55" strokeWidth="1.2"/>
+    <path d="M20 7 31.5 13.5v13L20 33 8.5 26.5v-13Z" fill="rgba(4,8,23,.55)" stroke="#fff" strokeOpacity=".25"/>
+    <text x="20" y=${r.a.length>1?24.2:25.5} textAnchor="middle" fill="#fff" style=${{font:`700 ${r.a.length>1?11:14}px "Chakra Petch",sans-serif`}}>${r.a}</text>
+  </svg>`;
+}
+function Bar({title,sub,onBack,right}){
+  return html`<div className="bar">
+    ${onBack?html`<button type="button" className="ibtn" onClick=${onBack} aria-label="Back"><${Icon} n="left"/></button>`:html`<span></span>`}
+    <div className="c"><h2>${title}</h2>${sub&&html`<div className="sub">${sub}</div>`}</div>
+    ${right||html`<span></span>`}
+  </div>`;
+}
+function Switch({on,onChange,label}){
+  return html`<span className="row" style=${{gap:'8px'}}><span className=${'vis '+(on?'on':'off')}>${on?'General':'Private'}</span>
+    <button type="button" role="switch" aria-checked=${on} aria-label=${label+': '+(on?'visible to everyone':'private')} className=${'sw'+(on?' on':'')} onClick=${()=>onChange(!on)}></button></span>`;
+}
+function Empty({icon,title,text,children}){return html`<div className="empty"><div className="ei"><${Icon} n=${icon} s=${30}/></div><b style=${{color:'var(--ink)'}}>${title}</b><span className="small">${text}</span>${children}</div>`;}
+
+/* ---------- searchable pick-list (single or multi) ---------- */
+function Combo({id,value,onChange,options,multi,placeholder}){
+  const [open,setOpen]=useState(false);const [q,setQ]=useState('');const [hi,setHi]=useState(0);
+  const wrap=useRef(null),inp=useRef(null);
+  const vals=multi?String(value||'').split(/\s*,\s*/).filter(Boolean):[];
+  const ql=q.trim().toLowerCase();
+  const toks=ql.split(/[\s–-]+/).filter(Boolean);
+  const filtered=options.filter(o=>{const lo=o.toLowerCase();return (!toks.length||toks.every(t=>lo.includes(t)))&&!(multi&&vals.includes(o));});
+  const exact=options.some(o=>o.toLowerCase()===ql)||vals.some(v=>v.toLowerCase()===ql);
+  const items=[...filtered.slice(0,80).map(o=>({v:o})),...(q.trim()&&!exact?[{v:q.trim().replace(/,/g,' '),custom:true}]:[])];
+  useEffect(()=>{if(!open)return;const f=e=>{if(wrap.current&&!wrap.current.contains(e.target)){setOpen(false);setQ('');}};document.addEventListener('pointerdown',f);return ()=>document.removeEventListener('pointerdown',f);},[open]);
+  useEffect(()=>{setHi(0);},[q]);
+  const pick=it=>{if(multi){onChange([...vals,it.v].join(', '));setQ('');inp.current&&inp.current.focus();}else{onChange(it.v);setQ('');setOpen(false);inp.current&&inp.current.blur();}};
+  const remove=v=>onChange(vals.filter(x=>x!==v).join(', '));
+  const key=e=>{
+    if(e.key==='ArrowDown'){e.preventDefault();setOpen(true);setHi(h=>Math.min(items.length-1,h+1));}
+    else if(e.key==='ArrowUp'){e.preventDefault();setHi(h=>Math.max(0,h-1));}
+    else if(e.key==='Enter'){if(open&&items[hi]){e.preventDefault();pick(items[hi]);}}
+    else if(e.key==='Escape'){setOpen(false);setQ('');}
+    else if(e.key==='Backspace'&&multi&&!q&&vals.length){remove(vals[vals.length-1]);}
+  };
+  const mark=o=>{const t=toks[0];if(!t)return o;const i=o.toLowerCase().indexOf(t);if(i<0)return o;return html`<span>${o.slice(0,i)}<mark>${o.slice(i,i+t.length)}</mark>${o.slice(i+t.length)}</span>`;};
+  return html`<div className="combo" ref=${wrap}>
+    ${multi&&vals.length>0&&html`<div className="chips">${vals.map(v=>html`<span key=${v} className="chipx">${v}<button type="button" aria-label=${'Remove '+v} onClick=${()=>remove(v)}><${Icon} n="x" s=${13}/></button></span>`)}</div>`}
+    <div className="inp-wrap"><span className="ic"><${Icon} n="search" s=${17}/></span>
+      <input id=${id} ref=${inp} className="inp" role="combobox" aria-expanded=${open} aria-autocomplete="list" autoComplete="off"
+        value=${multi||open?q:(value||'')} placeholder=${!multi&&value&&open?value:(placeholder||(multi?'Search and add…':'Search or type…'))}
+        onFocus=${()=>{setOpen(true);setTimeout(()=>inp.current&&inp.current.scrollIntoView&&inp.current.scrollIntoView({block:'center',behavior:'smooth'}),250);}}
+        onChange=${e=>{setQ(e.target.value);setOpen(true);}} onKeyDown=${key} style=${{paddingRight:!multi&&value?'46px':'14px'}}/>
+      ${!multi&&value&&!open&&html`<button type="button" className="clear" aria-label="Clear" onClick=${()=>onChange('')}><${Icon} n="x" s=${16}/></button>`}
+    </div>
+    ${open&&html`<ul className="combo-list" role="listbox">
+      ${!ql&&html`<li className="count">${filtered.length} options · type to search or add your own</li>`}
+      ${items.map((it,i)=>html`<li key=${(it.custom?'+':'')+it.v} role="option" aria-selected=${i===hi}><button type="button" className=${i===hi?'hi':''} onMouseDown=${e=>e.preventDefault()} onClick=${()=>pick(it)} onMouseEnter=${()=>setHi(i)}>${it.custom?html`<span className="cust"><${Icon} n="plus2" s=${15}/>Add “${it.v}”</span>`:mark(it.v)}</button></li>`)}
+      ${items.length===0&&html`<li className="none">${multi&&vals.length?'All options added.':'Start typing to add your own.'}</li>`}
+    </ul>`}
+  </div>`;
+}
+
+/* ---------- intro (animated "video") ---------- */
+function Intro({onDone}){
+  const [word,setWord]=useState('');
+  const [t,setT]=useState(0);
+  useEffect(()=>{
+    const target='ANTARYAMI',chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#$%';
+    let frame=0,iv;
+    const start=setTimeout(()=>{iv=setInterval(()=>{frame++;const done=Math.floor(frame/3);setWord(target.split('').map((ch,i)=>i<done?ch:chars[(Math.random()*chars.length)|0]).join('').slice(0,Math.min(target.length,done+3)));if(done>=target.length){clearInterval(iv);setWord(target);}},45);},2500);
+    const tick=setInterval(()=>setT(x=>x+1),1000);
+    const end=setTimeout(onDone,6200);
+    return ()=>{clearTimeout(start);clearInterval(iv);clearInterval(tick);clearTimeout(end);};
+  },[]);
+  const sats=[[ -150,-30,'#2ff5c0'],[-95,-125,'#a56bff'],[95,-125,'#ffb547'],[150,-30,'#ff4fb0'],[-120,85,'#5fb8ff'],[120,85,'#c58bff']];
+  return html`<div className="intro" role="dialog" aria-label="Antaryami intro">
+    <div className="scan"></div>
+    <button type="button" className="skip" onClick=${onDone}>SKIP ›</button>
+    <svg className="scene" viewBox="0 0 430 360">
+      <defs>
+        <radialGradient id="pinG" cx=".5" cy=".35" r=".7"><stop offset="0" stopColor="#8ff0ff"/><stop offset=".6" stopColor="#2fa8ff"/><stop offset="1" stopColor="#1a4dff"/></radialGradient>
+        <filter id="gl"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+      <g className="floor">
+        ${[0,1,2,3,4,5].map(i=>html`<line key=${'h'+i} x1="0" x2="430" y1=${300+i*i*3+i*4} y2=${300+i*i*3+i*4}/>`)}
+        ${[-6,-4,-2,0,2,4,6].map(i=>html`<line key=${'v'+i} x1=${215+i*20} y1="300" x2=${215+i*80} y2="380"/>`)}
+      </g>
+      <ellipse className="ripple" cx="215" cy="300" rx="70" ry="14" fill="none" stroke="#3ad7ff" strokeWidth="2"/>
+      <ellipse className="ripple r2" cx="215" cy="300" rx="70" ry="14" fill="none" stroke="#3ad7ff" strokeWidth="2"/>
+      <g className="spin">
+        <circle className="orbit" cx="215" cy="200" r="160" fill="none" stroke="#3a7bff" strokeWidth="2" opacity=".8" filter="url(#gl)"/>
+        ${sats.map(([x,y,c],i)=>html`<g key=${i} className="sat" style=${{'--i':i}} filter="url(#gl)">
+          <circle cx=${215+x} cy=${200+y} r="24" fill="#0a1236" stroke=${c} strokeWidth="2.5"/>
+          <circle cx=${215+x} cy=${200+y-6} r="7" fill=${c}/>
+          <path d=${`M${215+x-12} ${200+y+13}a12 9 0 0 1 24 0z`} fill=${c}/>
+        </g>`)}
+      </g>
+      <g className="pin" filter="url(#gl)">
+        <path d="M215 300c-6-26-62-70-62-122a62 62 0 0 1 124 0c0 52-56 96-62 122Z" fill="url(#pinG)"/>
+        <circle cx="215" cy="176" r="38" fill="#071030"/>
+        <circle cx="215" cy="165" r="13" fill="#eaf4ff"/>
+        <path d="M193 199a22 18 0 0 1 44 0Z" fill="#eaf4ff"/>
+      </g>
+    </svg>
+    <div className="word" aria-label="Antaryami">${word||' '}</div>
+    <div className="tagline">Know your campus · Be known</div>
+    <div className="timeline"><span>0:0${Math.min(t,6)}</span><div className="track"><i></i></div><span>0:06</span></div>
+  </div>`;
+}
+
+/* ---------- location gate ---------- */
+function LocationGate({demo,onGranted,onDenied}){
+  const [state,setState]=useState('asking');
+  const ask=()=>{
+    setState('asking');
+    if(!('geolocation' in navigator)){setState('denied');onDenied();return;}
+    navigator.geolocation.getCurrentPosition(p=>{setState('ok');setTimeout(()=>onGranted({lat:p.coords.latitude,lng:p.coords.longitude,acc:Math.round(p.coords.accuracy)}),500);},
+      ()=>{setState('denied');onDenied();},{enableHighAccuracy:true,timeout:12000,maximumAge:30000});
+  };
+  useEffect(()=>{const t=setTimeout(ask,700);return ()=>clearTimeout(t);},[]);
+  return html`<div className="screen"><div className="center-stage">
+    <div className="beacon"><div className="core"><${Icon} n=${state==='ok'?'check':'cross'} s=${36} sw=${2.4}/></div></div>
+    <div className="eyebrow">Step 1 · Location access</div>
+    <h1 style=${{fontSize:'26px'}}>${state==='ok'?'Location locked':'Antaryami needs your location'}</h1>
+    <p className="muted" style=${{maxWidth:'34ch',margin:0}}>${state==='ok'?'Opening the app…':'The map shows students within 20 m of you, so location access is required. Allow it in the prompt to continue.'}</p>
+    ${state!=='ok'&&html`<button type="button" className="btn pri" onClick=${ask}><${Icon} n="pin"/>Allow location access</button>`}
+  </div></div>`;
+}
+function Closed({demo,onRetry,onDemo}){
+  return html`<div className="screen"><div className="center-stage">
+    <div className="beacon" style=${{filter:'grayscale(1) brightness(.6)'}}><div className="core" style=${{background:'linear-gradient(135deg,#ff5470,#9b1d3a)',color:'#fff'}}><${Icon} n="power" s=${34}/></div></div>
+    <div className="eyebrow" style=${{color:'var(--red)'}}>App closed</div>
+    <h1 style=${{fontSize:'24px'}}>To open this app, please allow location access</h1>
+    <p className="muted" style=${{maxWidth:'36ch',margin:0}}>Turn on location for this site in your browser or phone settings, then open Antaryami again.</p>
+    <button type="button" className="btn pri" onClick=${onRetry}><${Icon} n="refresh"/>Open again</button>
+    ${demo&&html`<div className="demo-ribbon" style=${{maxWidth:'360px',textAlign:'left'}}><${Icon} n="info" s=${18}/><div>This preview window cannot share your real location. <button type="button" className="btn ghost sm" style=${{height:'auto',padding:'4px 0',color:'#e2d4ff',textDecoration:'underline'}} onClick=${onDemo}>Use a demo campus location</button> to explore the app.</div></div>`}
+  </div></div>`;
+}
+
+/* ---------- auth: login ---------- */
+function Login({api,flash,onIn,onCreate}){
+  const [enr,setEnr]=useState('');const [pw,setPw]=useState('');const [show,setShow]=useState(false);
+  const [busy,setBusy]=useState(false);const [err,setErr]=useState({});
+  const submit=async e=>{e.preventDefault();const er={};if(!enr.trim())er.enr='Enter your enrollment number.';if(!pw)er.pw='Enter your password.';setErr(er);if(Object.keys(er).length)return;
+    setBusy(true);try{const uid=await api.login(enr,pw);onIn(uid);}catch(x){flash(x.message,'bad');if(x.code==='notfound')setErr({enr:' '});}finally{setBusy(false);}};
+  const forgot=async()=>{if(!enr.trim()){setErr({enr:'Enter your enrollment number first.'});return;}try{const em=await api.resetPassword(enr);flash(api.mode==='demo'?'Demo: in the live app a reset link goes to '+em:'Password reset link sent to '+em,'good');}catch(x){flash(x.message,'bad');}};
+  return html`<form className="screen" onSubmit=${submit} noValidate style=${{justifyContent:'center'}}>
+    <div style=${{display:'flex',flexDirection:'column',alignItems:'center',gap:'14px',textAlign:'center'}}>
+      <img className="logo-sm" src=${LOGO} alt="Antaryami logo"/>
+      <h1 className="welcome">Welcome to <b>Antaryami</b></h1>
+      <p className="muted small" style=${{margin:0}}>Sign in with your enrollment number</p>
+    </div>
+    <div className="panel glow corner" style=${{display:'flex',flexDirection:'column',gap:'14px'}}>
+      <label className="field"><span className="lbl">Enrollment No</span>
+        <div className="inp-wrap"><span className="ic"><${Icon} n="hash" s=${18}/></span><input id="login-enr" className=${'inp'+(err.enr?' bad':'')} inputMode="numeric" autoComplete="username" placeholder="e.g. 26114109" value=${enr} onChange=${e=>{setEnr(e.target.value);setErr({});}}/></div>
+        ${err.enr&&err.enr.trim()&&html`<span className="err">${err.enr}</span>`}</label>
+      <label className="field"><span className="lbl">Password</span>
+        <div className="inp-wrap"><span className="ic"><${Icon} n="key" s=${18}/></span><input id="login-pw" className=${'inp'+(err.pw?' bad':'')} type=${show?'text':'password'} autoComplete="current-password" placeholder="Your password" value=${pw} onChange=${e=>{setPw(e.target.value);setErr({});}} style=${{paddingRight:'48px'}}/>
+          <button type="button" className="ibtn" aria-label=${show?'Hide password':'Show password'} onClick=${()=>setShow(!show)} style=${{position:'absolute',right:'4px',top:'3px',width:'42px',height:'42px',background:'none',border:0}}><${Icon} n="eye" s=${18}/></button></div>
+        ${err.pw&&html`<span className="err">${err.pw}</span>`}</label>
+      <button type="button" className="btn ghost sm" style=${{alignSelf:'flex-end',height:'28px',padding:0,color:'var(--cyan)'}} onClick=${forgot}>Forgot password?</button>
+      <div className="split">
+        <button type="button" className="btn sec" onClick=${onCreate}>Create New Account</button>
+        <button type="submit" className="btn pri" disabled=${busy}>${busy?html`<span className="spinner"></span>`:html`<${Icon} n="right" s=${18}/>`}Login</button>
+      </div>
+    </div>
+    ${api.mode==='demo'&&html`<div className="demo-ribbon"><${Icon} n="info" s=${18}/><span>Preview mode: everything starts at zero and is saved only in this browser, so you are the only student here. Connect Firebase (see the guide) to see real users.</span></div>`}
+  </form>`;
+}
+
+/* ---------- auth: register (email → OTP → enrollment + password) ---------- */
+function Register({api,flash,onBack,onDone}){
+  const [step,setStep]=useState(0);
+  const [email,setEmail]=useState('');const [sent,setSent]=useState(false);const [cool,setCool]=useState(0);
+  const [digits,setDigits]=useState(['','','','','','']);const [demoCode,setDemoCode]=useState('');
+  const [enr,setEnr]=useState('');const [pw,setPw]=useState('');const [pw2,setPw2]=useState('');
+  const [err,setErr]=useState('');const [busy,setBusy]=useState('');const [shake,setShake]=useState(false);
+  const refs=useRef([]);
+  useEffect(()=>{if(cool<=0)return;const t=setTimeout(()=>setCool(c=>c-1),1000);return ()=>clearTimeout(t);},[cool]);
+  const code=digits.join('');
+  const send=async()=>{setErr('');setBusy('send');try{const r=await api.sendOtp(email);setSent(true);setCool(r.cooldown||OTP_COOLDOWN_S);setDigits(['','','','','','']);setDemoCode(r.demoCode||'');flash(r.demoCode?'Demo: your code is shown below (in the live app it is emailed).':'Code sent to '+email.trim(),'good');setTimeout(()=>refs.current[0]&&refs.current[0].focus(),50);}catch(x){setErr(x.message);}finally{setBusy('');}};
+  const setDigit=(i,v)=>{v=v.replace(/\D/g,'');if(v.length>1){const arr=v.slice(0,6).split('');const d=[...digits];arr.forEach((c,j)=>{if(i+j<6)d[i+j]=c;});setDigits(d);const n=Math.min(5,i+arr.length);refs.current[n]&&refs.current[n].focus();return;}const d=[...digits];d[i]=v;setDigits(d);setErr('');if(v&&i<5)refs.current[i+1].focus();};
+  const key=(i,e)=>{if(e.key==='Backspace'&&!digits[i]&&i>0)refs.current[i-1].focus();};
+  const verify=async e=>{e&&e.preventDefault();if(code.length<6){setErr('Enter all 6 digits.');return;}setBusy('verify');setErr('');try{await api.checkOtp(email,code);flash('Email verified','good');setStep(1);}catch(x){setErr(x.message);setShake(true);setTimeout(()=>setShake(false),450);}finally{setBusy('');}};
+  const strength=(()=>{let s=0;if(pw.length>=8)s++;if(/[A-Z]/.test(pw)&&/[a-z]/.test(pw))s++;if(/\d/.test(pw))s++;if(/[^A-Za-z0-9]/.test(pw))s++;return s;})();
+  const create=async e=>{e.preventDefault();setErr('');
+    if(!/^\d{6,10}$/.test(enr.trim())){setErr('Enrollment number should be 6–10 digits.');return;}
+    if(pw.length<8||!/\d/.test(pw)){setErr('Password needs at least 8 characters including a number.');return;}
+    if(pw!==pw2){setErr('The two passwords do not match.');return;}
+    setBusy('create');try{const uid=await api.completeSignup({email,code,enrollment:enr.trim(),password:pw});onDone(uid);}catch(x){setErr(x.message);if(x.code==='expired'||x.code==='locked'||x.code==='none'){setStep(0);}}finally{setBusy('');}};
+  return html`<div className="screen">
+    <${Bar} title="Create account" sub=${step===0?'Verify institute email':'Set your login'} onBack=${step===0?onBack:()=>setStep(0)}/>
+    <div className="steps"><i className="on"></i><i className=${step>=1?'on':''}></i><i></i></div>
+    ${step===0&&html`<form className="panel glow corner" onSubmit=${verify} noValidate style=${{display:'flex',flexDirection:'column',gap:'16px'}}>
+      <label className="field"><span className="lbl">Enter your institute email ID</span>
+        <div className="row"><div className="inp-wrap grow"><span className="ic"><${Icon} n="mail" s=${18}/></span><input id="reg-email" className="inp" type="email" autoComplete="email" placeholder="name@iitr.ac.in" value=${email} onChange=${e=>{setEmail(e.target.value);setErr('');}} disabled=${sent&&cool>0}/></div>
+        <button type="button" className="btn pri sm" style=${{height:'50px'}} onClick=${send} disabled=${!!busy||cool>0||!email.trim()}>${busy==='send'?html`<span className="spinner"></span>`:html`<${Icon} n="send" s=${16}/>`}${cool>0?cool+'s':sent?'Resend':'Send OTP'}</button></div></label>
+      ${demoCode&&html`<div className="inbox"><${Icon} n="mail" s=${22} c="var(--amber)"/><div className="grow">Demo inbox · code for ${email.trim()}<br/><b>${demoCode}</b></div></div>`}
+      <div className="field"><span className="lbl">6-digit code</span>
+        <div className=${'otp'+(shake?' bad':'')}>${digits.map((d,i)=>html`<input key=${i} id=${'otp'+i} ref=${el=>refs.current[i]=el} inputMode="numeric" autoComplete=${i===0?'one-time-code':'off'} maxLength=${i===0?6:1} value=${d} aria-label=${'Digit '+(i+1)} disabled=${!sent} onChange=${e=>setDigit(i,e.target.value)} onKeyDown=${e=>key(i,e)}/>`)}</div>
+        <span className="hint">${sent?(cool>0?`Didn't get it? You can resend in ${cool}s. Check spam too. The code expires in 10 minutes.`:'You can ask for a new code now.'):'We send a one-time code to confirm the email belongs to you.'}</span></div>
+      ${err&&html`<span className="err" role="alert">${err}</span>`}
+      <button type="submit" className="btn pri block" disabled=${!sent||!!busy}>${busy==='verify'?html`<span className="spinner"></span>`:html`<${Icon} n="shield" s=${18}/>`}Verify & continue</button>
+    </form>`}
+    ${step===1&&html`<form className="panel glow corner" onSubmit=${create} noValidate style=${{display:'flex',flexDirection:'column',gap:'14px'}}>
+      <div className="row"><span className="tag" style=${{'--c':'var(--mint)'}}><${Icon} n="check" s=${12} sw=${3}/>Verified</span><span className="small muted grow" style=${{overflow:'hidden',textOverflow:'ellipsis'}}>${email.trim()}</span></div>
+      <label className="field"><span className="lbl">Enrollment No</span><div className="inp-wrap"><span className="ic"><${Icon} n="hash" s=${18}/></span><input id="reg-enr" className="inp" inputMode="numeric" placeholder="e.g. 26114109" value=${enr} onChange=${e=>{setEnr(e.target.value);setErr('');}}/></div></label>
+      <label className="field"><span className="lbl">Create new password</span><div className="inp-wrap"><span className="ic"><${Icon} n="key" s=${18}/></span><input id="reg-pw" className="inp" type="password" autoComplete="new-password" placeholder="8+ characters with a number" value=${pw} onChange=${e=>{setPw(e.target.value);setErr('');}}/></div>
+        <div className="meter"><i style=${{width:(strength/4*100)+'%',background:['var(--red)','var(--red)','var(--amber)','var(--cyan)','var(--mint)'][strength]}}></i></div></label>
+      <label className="field"><span className="lbl">Confirm password</span><div className="inp-wrap"><span className="ic"><${Icon} n="key" s=${18}/></span><input id="reg-pw2" className="inp" type="password" autoComplete="new-password" placeholder="Type it again" value=${pw2} onChange=${e=>{setPw2(e.target.value);setErr('');}}/></div></label>
+      ${err&&html`<span className="err" role="alert">${err}</span>`}
+      <button type="submit" className="btn pri block" disabled=${!!busy}>${busy?html`<span className="spinner"></span>`:html`<${Icon} n="spark" s=${18}/>`}Create account</button>
+    </form>`}
+  </div>`;
+}
+
+/* ---------- profile setup / edit ---------- */
+function Setup({api,mine,flash,onSaved,onCancel,editing}){
+  const [profile,setProfile]=useState(mine.profile||{});
+  const [privacy,setPrivacy]=useState(mine.privacy||defaultPrivacy());
+  const [photo,setPhoto]=useState(mine.photo||'');
+  const [busy,setBusy]=useState(false);
+  const filled=FIELDS.filter(f=>profile[f.key]).length+(photo?1:0),pct=Math.round(filled/(FIELDS.length+1)*100);
+  const set=(k,v)=>setProfile(p=>({...p,[k]:v}));
+  const pick=async e=>{const f=e.target.files&&e.target.files[0];if(!f)return;if(!/^image\//.test(f.type)){flash('Choose an image file (JPG or PNG).','bad');return;}try{setPhoto(await resizeImage(f));}catch(x){flash('Could not read that image. Try another.','bad');}};
+  const save=async()=>{setBusy(true);try{await api.saveProfile(profile,privacy,photo);flash(editing?'Profile updated':'Profile ready. Welcome in!','good');onSaved();}catch(x){flash(x.message,'bad');}finally{setBusy(false);}};
+  const input=f=>{
+    const v=profile[f.key]||'',id='pf-'+f.key;
+    if(f.type==='select')return html`<select id=${id} className="inp" value=${v} onChange=${e=>set(f.key,e.target.value)}><option value="">Choose…</option>${f.opt.map(o=>html`<option key=${o} value=${o}>${o}</option>`)}</select>`;
+    if(f.type==='rating')return html`<div className="stars" role="radiogroup" aria-label="Mess food rating">${[1,2,3,4,5].map(n=>html`<button type="button" key=${n} className=${+v>=n?'on':''} aria-label=${n+' star'+(n>1?'s':'')} onClick=${()=>set(f.key,+v===n?'':String(n))}><${Icon} n="star" s=${28} sw=${1.6}/></button>`)}<span className="small muted" style=${{alignSelf:'center'}}>${v?v+' / 5':'Tap to rate'}</span></div>`;
+    if(f.type==='combo'||f.type==='multi')return html`<${Combo} id=${id} value=${v} options=${f.opt} multi=${f.type==='multi'} onChange=${x=>set(f.key,x)}/>`;
+    if(f.type==='area')return html`<textarea id=${id} className="inp" rows="2" placeholder=${f.ph||''} value=${v} onChange=${e=>set(f.key,e.target.value)}></textarea>`;
+    return html`<input id=${id} className="inp" type=${f.type} inputMode=${f.type==='number'?'numeric':undefined} placeholder=${f.ph||''} value=${v} onChange=${e=>set(f.key,e.target.value)}/>`;
+  };
+  return html`<div className="screen">
+    <${Bar} title=${editing?'Edit profile':'Set up your profile'} sub=${pct+'% complete'} onBack=${onCancel}/>
+    <div className="meter"><i style=${{width:pct+'%',background:'linear-gradient(90deg,var(--cyan),var(--violet))'}}></i></div>
+    <p className="hint" style=${{marginTop:'-6px'}}>Every detail is optional. Fields with a search icon have a list to pick from; type to search, or add your own. The switch on each one decides who sees it: <b style=${{color:'var(--mint)'}}>General</b> is visible to everyone, <b style=${{color:'var(--amber)'}}>Private</b> only to people you approve.</p>
+    <div className="panel corner photo-pick">
+      <${Avatar} u=${{name:profile.name||'You',photo,uid:mine.uid}} s=${84}/>
+      <div className="grow" style=${{display:'flex',flexDirection:'column',gap:'8px'}}>
+        <b>Profile photo</b>
+        <div className="row wrap">
+          <label className="btn sec sm"><${Icon} n="camera" s=${16}/>${photo?'Change':'Upload'}<input id="pf-photo" type="file" accept="image/*" hidden onChange=${pick}/></label>
+          ${photo&&html`<button type="button" className="btn ghost sm" onClick=${()=>setPhoto('')}>Remove</button>`}
+        </div>
+        <span className="hint">Your photo is always visible on the map and in search.</span>
+      </div>
+    </div>
+    ${SECTIONS.map(s=>html`<section key=${s.t} className="panel" style=${{display:'flex',flexDirection:'column'}}>
+      <div className="sec-title">${s.t}</div>
+      ${s.f.map(([k])=>{const f=FIELD[k];return html`<div className="frow" key=${k}>
+        <div className="frow-head"><label className="lbl" htmlFor=${'pf-'+k}>${f.label}</label><${Switch} on=${privacy[k]!==false} label=${f.label} onChange=${b=>setPrivacy(p=>({...p,[k]:b}))}/></div>
+        ${input(f)}
+      </div>`;})}
+    </section>`)}
+    <div className="sticky-foot">
+      ${!editing&&html`<button type="button" className="btn sec" onClick=${save} disabled=${busy}>Skip for now</button>`}
+      <button type="button" className="btn pri grow" onClick=${save} disabled=${busy}>${busy?html`<span className="spinner"></span>`:html`<${Icon} n="check" s=${18} sw=${2.6}/>`}${editing?'Save changes':'Save & enter Antaryami'}</button>
+    </div>
+  </div>`;
+}
+
+/* ---------- main hub ---------- */
+function Hub({me,board,nearCount,incomingCount,visitsCount,go,openMenu}){
+  const r=board.byId[me.uid];if(!r)return null;
+  const tiles=[
+    {id:'profile',label:'Profile',icon:'user',c:'var(--cyan)',sub:Object.keys(me.profile).filter(k=>me.profile[k]).length+' details filled'},
+    {id:'leaderboard',label:'Leaderboard',icon:'trophy',c:'var(--amber)',sub:'You are #'+r.pos+' of '+board.rows.length},
+    {id:'missions',label:'Missions',icon:'target',c:'var(--mint)',sub:r.total+' points this month'},
+    {id:'titles',label:'Titles',icon:'award',c:'var(--pink)',sub:r.titles.length?r.titles.map(t=>t.name).join(', '):'No titles yet'}
+  ];
+  return html`<div className="screen" style=${{paddingBottom:0}}>
+    <div className="bar">
+      <button type="button" className="ibtn" onClick=${()=>go('map')} aria-label="Nearby map"><${Icon} n="pin"/>${nearCount>0&&html`<span className="dot">${nearCount}</span>`}</button>
+      <div className="c"><div className="sub">Antaryami</div></div>
+      <button type="button" className="ibtn" onClick=${openMenu} aria-label="Menu"><${Icon} n="menu"/>${incomingCount>0&&html`<span className="dot">${incomingCount}</span>`}</button>
+    </div>
+    <div className="hero">
+      <div className="halo"><div className="ring"></div><div className="ring2"></div><${Avatar} u=${{...me,name:me.profile.name||'You'}} s=${128}/><span className="rk"><${RankBadge} r=${r.rank} s=${46}/></span></div>
+      <h1>${me.profile.name||'Student '+me.enrollment}</h1>
+      <div className="rankline" style=${{color:r.rank.c1}}><span>${r.rank.n}</span><span className="muted">·</span><span className="muted">${[me.profile.branch,me.profile.year].filter(Boolean).join(' · ')||me.enrollment}</span></div>
+      ${r.titles.length>0&&html`<div className="row wrap" style=${{justifyContent:'center'}}>${r.titles.map(t=>html`<span key=${t.id} className="tag" style=${{'--c':t.c}}><${Icon} n=${t.icon} s=${12}/>${t.name}</span>`)}</div>`}
+      <div className="stats3">
+        <div className="stat"><b>${r.total}</b><span>Points</span></div>
+        <div className="stat"><b>${r.stats.views}</b><span>Views</span></div>
+        <div className="stat"><b>#${r.pos}</b><span>Rank</span></div>
+      </div>
+    </div>
+    <div className="tiles">${tiles.map((t,i)=>html`<button type="button" key=${t.id} className="tile" style=${{'--c':t.c,'--i':i}} onClick=${()=>go(t.id)}><span className="ti"><${Icon} n=${t.icon} s=${22}/></span><b>${t.label}</b><small>${t.sub}</small></button>`)}</div>
+    <button type="button" className="panel near-card" onClick=${()=>go('map')}>
+      <div className="mini-radar"><i style=${{left:'30%',top:'35%'}}></i><i style=${{left:'62%',top:'58%',background:'var(--amber)',boxShadow:'0 0 8px var(--amber)'}}></i><i style=${{left:'48%',top:'22%',background:'var(--mint)',boxShadow:'0 0 8px var(--mint)'}}></i></div>
+      <div className="grow"><b>${nearCount} online within ${RADIUS_M} m</b><div className="small muted">Open the live map to see who is around you</div></div>
+      <${Icon} n="right"/>
+    </button>
+    <button type="button" className="panel near-card" onClick=${()=>go('stalkers')}>
+      <div className="mini-radar" style=${{display:'grid',placeItems:'center'}}><${Icon} n="eye" c="var(--pink)"/></div>
+      <div className="grow"><b>${visitsCount} profile visit${visitsCount===1?'':'s'}</b><div className="small muted">See who checked your profile</div></div>
+      <${Icon} n="right"/>
+    </button>
+    <div className="searchbar"><button type="button" onClick=${()=>go('search')}><${Icon} n="search"/><span>Search students</span><kbd>+1 / +2 pts</kbd></button></div>
+  </div>`;
+}
+
+function Drawer({me,board,incomingCount,visitsCount,ghost,onGhost,go,onClose,onLogout}){
+  const r=board.byId[me.uid];
+  const item=(icon,label,c,fn,cnt)=>html`<button type="button" className="mitem" style=${{'--c':c}} onClick=${fn}><span className="mi"><${Icon} n=${icon} s=${18}/></span>${label}${cnt?html`<span className="cnt">${cnt}</span>`:null}</button>`;
+  return html`<div><div className="scrim" onClick=${onClose}></div><nav className="drawer" aria-label="Menu">
+    <div className="row" style=${{marginBottom:'10px'}}><${Avatar} u=${{...me,name:me.profile.name||'You'}} s=${50}/><div className="grow"><b>${me.profile.name||'Student'}</b><div className="small muted mono">${me.enrollment}</div></div>${r&&html`<${RankBadge} r=${r.rank} s=${34}/>`}</div>
+    <div className="divider"></div>
+    ${item('edit','Edit profile','var(--cyan)',()=>go('editAuth'))}
+    ${item('eye','Stalkers','var(--pink)',()=>go('stalkers'),visitsCount)}
+    ${item('bell','Private access requests','var(--amber)',()=>go('requests'),incomingCount)}
+    ${item('info','App info','var(--violet)',()=>go('info'))}
+    <div className="mitem" style=${{'--c':'var(--mint)',cursor:'default'}}><span className="mi"><${Icon} n="ghost" s=${18}/></span><span className="grow">Ghost mode<div className="small muted" style=${{fontWeight:500}}>Hide me from the map</div></span><button type="button" role="switch" aria-checked=${ghost} aria-label="Ghost mode" className=${'sw'+(ghost?' on':'')} onClick=${()=>onGhost(!ghost)}></button></div>
+    <div style=${{flex:1}}></div>
+    <button type="button" className="btn danger block" onClick=${onLogout}><${Icon} n="logout" s=${18}/>Logout</button>
+  </nav></div>`;
+}
+
+/* ---------- profile (mine) ---------- */
+function MyProfile({api,me,setMe,flash,go,back}){
+  const toggle=async(k,b)=>{const privacy={...me.privacy,[k]:b};setMe({...me,privacy});try{await api.saveProfile(me.profile,privacy,me.photo);}catch(x){flash(x.message,'bad');}};
+  const show=v=>v===undefined||v===''||v===null?null:(FIELD.messRating&&v&&/^[1-5]$/.test(v)?v:v);
+  return html`<div className="screen">
+    <${Bar} title="Profile" sub="What you shared" onBack=${back}/>
+    <div className="panel glow corner row"><${Avatar} u=${{...me,name:me.profile.name||'You'}} s=${64}/><div className="grow"><b style=${{fontSize:'18px'}}>${me.profile.name||'Add your name'}</b><div className="small muted mono">${me.enrollment} · ${me.email}</div></div></div>
+    <p className="hint">Switch a detail to <b style=${{color:'var(--amber)'}}>Private</b> to hide it from visitors. Changes save straight away.</p>
+    ${SECTIONS.map(s=>html`<section key=${s.t} className="panel"><div className="sec-title">${s.t}</div>
+      ${s.f.map(([k])=>{const f=FIELD[k],v=me.profile[k];return html`<div className="pf-row" key=${k}><div className="grow"><div className="k">${f.label}</div><div className=${'v'+(v?'':' empty')}>${v?(k==='messRating'?'★'.repeat(+v)+' '+v+'/5':v):'Not added'}</div></div><${Switch} on=${me.privacy[k]!==false} label=${f.label} onChange=${b=>toggle(k,b)}/></div>`;})}
+    </section>`)}
+    <button type="button" className="btn pri block" onClick=${()=>go('editAuth')}><${Icon} n="edit" s=${18}/>Edit profile</button>
+  </div>`;
+}
+
+/* ---------- view another student ---------- */
+function ViewProfile({api,board,uid,source,category,flash,refresh,back,dist}){
+  const r=board.byId[uid];
+  const [priv,setPriv]=useState(null);const [status,setStatus]=useState('none');const [counted,setCounted]=useState(null);
+  useEffect(()=>{let live=true;(async()=>{
+    try{const res=await api.recordVisit(uid,source,category);if(!live)return;setCounted(res);if(res&&res.counted){refresh();if(res.pts)flash(`+${res.pts} pt${res.pts>1?'s':''} to ${r?r.name.split(' ')[0]:'them'} (${CATMAP[category].short})`,'good');}}catch(x){}
+    const p=await api.getPrivate(uid);if(live)setPriv(p);const st=await api.requestStatus(uid);if(live)setStatus(st);
+  })();return ()=>{live=false;};},[uid]);
+  useEffect(()=>{const h=e=>{if(e.detail&&e.detail.uid===uid){api.getPrivate(uid).then(setPriv);setStatus('approved');}};addEventListener('ant-approved',h);return ()=>removeEventListener('ant-approved',h);},[uid]);
+  if(!r)return html`<div className="screen"><${Bar} title="Profile" onBack=${back}/><${Empty} icon="user" title="Profile not found" text="This student may have deleted their account."/></div>`;
+  const data=priv||r.pub;
+  const request=async()=>{try{await api.requestAccess(uid);setStatus('pending');flash('Request sent to '+r.name.split(' ')[0],'good');}catch(x){flash(x.message,'bad');}};
+  return html`<div className="screen">
+    <${Bar} title=${r.name.split(' ')[0]} sub=${'via '+(source==='search'?CATMAP[category].short+' search':source)} onBack=${back}/>
+    <div className="hero">
+      <div className="halo" style=${{width:'150px',height:'150px'}}><div className="ring"></div><div className="ring2"></div><${Avatar} u=${r} s=${108}/><span className="rk" style=${{right:'6px',bottom:'8px'}}><${RankBadge} r=${r.rank} s=${40}/></span></div>
+      <h1>${r.name}</h1>
+      <div className="rankline" style=${{color:r.rank.c1}}>${r.rank.n}<span className="muted">· #${r.pos} · ${r.total} pts</span></div>
+      ${r.titles.length>0&&html`<div className="row wrap" style=${{justifyContent:'center'}}>${r.titles.map(t=>html`<span key=${t.id} className="tag" style=${{'--c':t.c}}><${Icon} n=${t.icon} s=${12}/>${t.name}</span>`)}</div>`}
+      ${dist!=null&&html`<span className="tag" style=${{'--c':'var(--mint)'}}><${Icon} n="pin" s=${12}/>${dist.toFixed(0)} m away</span>`}
+      ${counted&&!counted.counted&&!counted.self&&html`<span className="small muted">Your visit was already counted in the last hour.</span>`}
+    </div>
+    ${r.privateCount>0&&!priv&&html`<div className="locked"><span className="li-ic"><${Icon} n="lock"/></span><div className="grow"><b>${r.privateCount} private detail${r.privateCount>1?'s':''}</b><div className="small muted">${status==='pending'?'Waiting for '+r.name.split(' ')[0]+' to accept.':status==='denied'?'Your request was declined.':'Ask to see them. They decide.'}</div></div>
+      ${status==='none'&&html`<button type="button" className="btn pri sm" onClick=${request}><${Icon} n="send" s=${15}/>Request</button>`}
+      ${status==='pending'&&html`<span className="tag" style=${{'--c':'var(--amber)'}}><span className="spinner" style=${{width:'12px',height:'12px',borderWidth:'2px'}}></span>Pending</span>`}</div>`}
+    ${priv&&r.privateCount>0&&html`<div className="locked" style=${{borderColor:'rgba(52,245,197,.5)',background:'rgba(52,245,197,.06)'}}><span className="li-ic" style=${{background:'rgba(52,245,197,.15)',color:'var(--mint)'}}><${Icon} n="unlock"/></span><div><b>Private details unlocked</b><div className="small muted">${r.name.split(' ')[0]} approved your request.</div></div></div>`}
+    ${SECTIONS.map(s=>{const rows=s.f.filter(([k])=>data[k]);if(!rows.length)return null;return html`<section key=${s.t} className="panel"><div className="sec-title">${s.t}</div>
+      ${rows.map(([k])=>html`<div className="pf-row" key=${k}><div className="grow"><div className="k">${FIELD[k].label}${priv&&!r.pub[k]?html` <span className="tag" style=${{'--c':'var(--amber)',padding:'1px 6px'}}>private</span>`:''}</div><div className="v">${k==='messRating'?'★'.repeat(+data[k])+' '+data[k]+'/5':data[k]}</div></div></div>`)}
+    </section>`;})}
+    ${Object.keys(data).length===0&&html`<${Empty} icon="user" title="Nothing public yet" text="This student hasn't shared any general details."/>`}
+  </div>`;
+}
+
+/* ---------- leaderboard ---------- */
+function Leaderboard({board,me,go,back}){
+  const [by,setBy]=useState('points');
+  const rows=by==='points'?board.rows:board.rows.slice().sort((a,b)=>b.stats.views-a.stats.views);
+  const top=rows.slice(0,3),order=[top[1],top[0],top[2]],hs=[92,124,76],cs=['#c9d4e4','#ffc94a','#e0a27a'];
+  const val=u=>by==='points'?u.total:u.stats.views;
+  return html`<div className="screen">
+    <${Bar} title="Leaderboard" sub=${'Resets in '+daysLeftInMonth()+' days'} onBack=${back}/>
+    <div className="seg"><button type="button" className=${by==='points'?'on':''} onClick=${()=>setBy('points')}>By points</button><button type="button" className=${by==='views'?'on':''} onClick=${()=>setBy('views')}>By visitors</button></div>
+    <div className="podium">${order.map((u,i)=>u?html`<button type="button" key=${u.uid} className="pod" style=${{'--c':cs[[1,0,2][i]]}} onClick=${()=>go('view',{uid:u.uid,source:'leaderboard',category:'all'})}>
+      <div className="av-wrap"><${Avatar} u=${u} s=${i===1?70:56}/><span className="rk"><${RankBadge} r=${u.rank} s=${26}/></span></div>
+      <span className="nm">${u.uid===me.uid?'You':u.name.split(' ')[0]}</span><span className="small mono" style=${{color:'var(--c)'}}>${val(u)} ${by==='points'?'pts':'views'}</span>
+      <div className="base" style=${{height:hs[i]+'px',animationDelay:(i*120)+'ms'}}>${[2,1,3][i]}</div>
+    </button>`:html`<span key=${i}></span>`)}</div>
+    <div className="list">${rows.slice(3).map((u,i)=>html`<button type="button" key=${u.uid} className=${'li'+(u.uid===me.uid?' me':'')} style=${{'--i':i}} onClick=${()=>go('view',{uid:u.uid,source:'leaderboard',category:'all'})}>
+      <span className="pos">${i+4}</span><div className="av-wrap"><${Avatar} u=${u} s=${42}/></div>
+      <div className="grow"><div className="nm">${u.uid===me.uid?'You':u.name}</div><div className="meta row" style=${{gap:'6px'}}><${RankBadge} r=${u.rank} s=${16}/>${u.rank.n}${u.titles.length?' · '+u.titles.map(t=>t.name).join(', '):''}</div></div>
+      <div className="num"><b>${val(u)}</b><span>${by==='points'?u.stats.views+' views':u.total+' pts'}</span></div>
+    </button>`)}</div>
+  </div>`;
+}
+
+/* ---------- missions ---------- */
+function Missions({board,me,back}){
+  const r=board.byId[me.uid],s=r.stats,next=5-(s.views%5);
+  const cps=[['open','Open','grid','var(--cyan)'],['sports','Sports','sports','var(--amber)'],['academic','Academics','book','var(--mint)'],['clubs','Clubs','users','var(--violet)'],['hackathon','Hacker','code','var(--pink)'],['esports','Gamer','gamepad','var(--blue)']];
+  const miles=[5,10,25,50,100,250];
+  return html`<div className="screen">
+    <${Bar} title="Missions" sub=${'Month resets in '+daysLeftInMonth()+' days'} onBack=${back}/>
+    <div className="panel glow corner bigscore"><span className="eyebrow">Total points</span><b>${r.total}</b>
+      <div className="row" style=${{gap:'8px'}}><${RankBadge} r=${r.rank} s=${26}/><span className="small" style=${{color:r.rank.c1,fontWeight:800}}>${r.rank.n}</span>${r.rank.i<RANKS.length-1&&html`<span className="small muted">· ${RANKS[r.rank.i+1].min-r.total} pts to ${RANKS[r.rank.i+1].n}</span>`}</div></div>
+    <div className="catpts">${cps.map(([k,l,ic,c])=>html`<div key=${k} className="cp" style=${{'--c':c}}><span className="ci"><${Icon} n=${ic} s=${20}/></span><b>${s[k]||0}</b><span>${l}</span></div>`)}</div>
+    <div className="panel" style=${{display:'flex',flexDirection:'column',gap:'10px'}}>
+      <div className="row"><b className="grow">Next view bonus</b><span className="mono small">${s.views%5}/5 views</span></div>
+      <div className="bar-prog"><i style=${{width:((s.views%5)/5*100)+'%'}}></i></div>
+      <span className="hint">Every 5 profile visits gives you +1 point. ${next} more to the next one.</span>
+    </div>
+    <div className="panel small" style=${{display:'grid',gridTemplateColumns:'1fr auto',gap:'6px 12px'}}>
+      <span className="muted">Search visits (All +1, category +2)</span><b className="mono">${r.visitPts}</b>
+      <span className="muted">View bonus (1 per 5 views)</span><b className="mono">${r.viewBonus}</b>
+      <span className="muted">Title bonus (5 per title)</span><b className="mono">${r.titles.length*5}</b>
+      <div className="divider" style=${{gridColumn:'1/-1'}}></div>
+      <b>Total</b><b className="mono" style=${{color:'var(--cyan)'}}>${r.total}</b>
+    </div>
+    <div className="sec-title">View milestones</div>
+    <div className="list">${miles.map((m,i)=>{const done=s.views>=m;return html`<div key=${m} className=${'ms'+(done?' done':'')} style=${{animation:'screenIn .4s both',animationDelay:i*50+'ms'}}><span className="mi"><${Icon} n=${done?'check':'flag'} s=${18} sw=${2.4}/></span><div className="grow"><b>${m} profile views</b><div className="small muted">Worth ${m/5} view-bonus point${m>5?'s':''}</div>${!done&&html`<div className="bar-prog" style=${{height:'6px',marginTop:'6px'}}><i style=${{width:Math.min(100,s.views/m*100)+'%'}}></i></div>`}</div><span className="mono small" style=${{color:done?'var(--mint)':'var(--muted)'}}>${done?'Done':s.views+'/'+m}</span></div>`;})}</div>
+  </div>`;
+}
+
+/* ---------- titles ---------- */
+function Titles({board,me,go,back}){
+  return html`<div className="screen">
+    <${Bar} title="Titles" sub="Each title = +5 points" onBack=${back}/>
+    <p className="hint">Titles go to whoever leads a category this month. They are recalculated live and reset with the leaderboard.</p>
+    <div className="titles">${TITLES.map((t,i)=>{const hid=board.holders[t.id],h=hid&&board.byId[hid],own=hid===me.uid;
+      return html`<div key=${t.id} className=${'tcard'+(own?' own':'')} style=${{'--c':t.c,'--i':i}}>
+        ${own&&html`<span className="tag own-tag" style=${{'--c':t.c}}>Yours</span>`}
+        <span className="emb"><${Icon} n=${t.icon} s=${26}/></span><h3>${t.name}</h3><span className="small muted">${t.cat}</span>
+        ${h?html`<button type="button" className="holder" style=${{background:'none',border:0,padding:0,color:'inherit'}} onClick=${()=>!own&&go('view',{uid:h.uid,source:'titles',category:'all'})}><${Avatar} u=${h} s=${22}/><span>${own?'You':h.name} · ${t.key==='views'?h.stats.views+' views':h.stats[t.key]+' pts'}</span></button>`:html`<span className="holder">Unclaimed</span>`}
+      </div>`;})}</div>
+    <div className="sec-title">Rank ladder</div>
+    <div className="panel" style=${{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:'12px 6px'}}>${RANKS.map(rk=>{const cur=board.byId[me.uid].rank.n===rk.n;return html`<div key=${rk.n} style=${{display:'flex',flexDirection:'column',alignItems:'center',gap:'4px',textAlign:'center',opacity:cur?1:.75}}><${RankBadge} r=${{...rk,i:RANKS.indexOf(rk)}} s=${cur?42:34}/><span style=${{fontSize:'10.5px',fontWeight:cur?800:600,color:cur?rk.c1:'var(--muted)'}}>${rk.n}</span><span className="mono" style=${{fontSize:'10px',color:'var(--dim)'}}>${rk.min}+</span></div>`;})}</div>
+  </div>`;
+}
+
+/* ---------- search ---------- */
+function Search({board,me,go,back,initialCat}){
+  const [cat,setCat]=useState(initialCat||'all');const [q,setQ]=useState('');
+  const ql=q.trim().toLowerCase();
+  const rows=board.rows.filter(u=>u.uid!==me.uid&&inCategory(u,cat)&&(!ql||[u.name,...Object.values(u.pub)].join(' ').toLowerCase().includes(ql)));
+  const c=CATMAP[cat];
+  const hint=u=>{const p=u.pub;return cat==='sports'?p.bestSports:cat==='academic'?(p.bestSubject||p.academicAwards):cat==='clubs'?(p.clubPresent||p.clubPast||p.festVertical):cat==='hackathon'?p.hackathon:cat==='esports'?(p.hobbies||p.extraSkill):[p.branch,p.year,p.hostel].filter(Boolean).join(' · ');};
+  return html`<div className="screen">
+    <${Bar} title="Search" sub="Explore by category" onBack=${back}/>
+    <div className="cats" role="tablist">${CATS.map(x=>html`<button type="button" key=${x.id} role="tab" aria-selected=${cat===x.id} className=${'cat'+(cat===x.id?' on':'')} style=${{'--c':x.c}} onClick=${()=>setCat(x.id)}><span className="ci"><${Icon} n=${x.icon} s=${20}/></span><b>${x.label}</b><small>+${x.pts} pt${x.pts>1?'s':''} to them</small></button>`)}</div>
+    <div className="inp-wrap"><span className="ic"><${Icon} n="search" s=${18}/></span><input id="search-q" className="inp" type="search" placeholder=${'Search in '+c.label.toLowerCase()} value=${q} onChange=${e=>setQ(e.target.value)} autoFocus/></div>
+    <span className="hint">Opening a profile from <b style=${{color:c.c}}>${c.label}</b> gives that student +${c.pts} point${c.pts>1?'s':''}${cat!=='all'?' in '+c.short:''}. Each visit counts once per hour.</span>
+    ${rows.length===0?html`<${Empty} icon="search" title="No students found" text=${ql?'Nobody matches “'+q+'” here. Try another word or category.':'Nobody has shared details for this category yet.'}/>`:
+    html`<div className="list">${rows.map((u,i)=>html`<button type="button" key=${u.uid} className="li" style=${{'--i':Math.min(i,10)}} onClick=${()=>go('view',{uid:u.uid,source:'search',category:cat})}>
+      <div className="av-wrap"><${Avatar} u=${u} s=${46}/><span className="rk"><${RankBadge} r=${u.rank} s=${20}/></span></div>
+      <div className="grow"><div className="nm">${u.name}</div><div className="meta">${hint(u)||'—'}</div></div>
+      <div className="num"><b style=${{fontSize:'15px'}}>${u.total}</b><span>pts</span></div>
+    </button>`)}</div>`}
+  </div>`;
+}
+
+/* ---------- stalkers ---------- */
+function Stalkers({visits,board,go,back}){
+  const groups={};visits.forEach(v=>{(groups[v.by]=groups[v.by]||{by:v.by,n:0,last:0,cats:new Set()});const g=groups[v.by];g.n++;g.last=Math.max(g.last,v.at);g.cats.add(v.category);});
+  const list=Object.values(groups).sort((a,b)=>b.last-a.last);
+  return html`<div className="screen">
+    <${Bar} title="Stalkers" sub="Who checked your profile" onBack=${back}/>
+    <div className="panel glow corner bigscore"><span className="eyebrow">Total profile visits</span><b>${visits.length}</b><span className="small muted">${list.length} different student${list.length===1?'':'s'}</span></div>
+    ${list.length===0?html`<${Empty} icon="eye" title="No visitors yet" text="Fill in more of your profile so people find you in search."/>`:
+    html`<div className="list">${list.map((g,i)=>{const u=board.byId[g.by];if(!u)return null;return html`<button type="button" key=${g.by} className="li" style=${{'--i':i}} onClick=${()=>go('view',{uid:g.by,source:'stalkers',category:'all'})}>
+      <div className="av-wrap"><${Avatar} u=${u} s=${46}/><span className="rk"><${RankBadge} r=${u.rank} s=${20}/></span></div>
+      <div className="grow"><div className="nm">${u.name}</div><div className="meta"><${Icon} n="clock" s=${12}/> ${ago(g.last)} · via ${[...g.cats].map(c=>CATMAP[c]?CATMAP[c].short:c).join(', ')}</div></div>
+      <div className="num"><b>${g.n}×</b><span>visits</span></div>
+    </button>`;})}</div>`}
+  </div>`;
+}
+
+/* ---------- requests ---------- */
+function Requests({api,board,flash,refreshInbox,go,back}){
+  const [items,setItems]=useState(null);
+  const load=async()=>setItems(await api.incoming());
+  useEffect(()=>{load();},[]);
+  const act=async(uid,ok)=>{try{await api.respond(uid,ok);flash(ok?'Access granted':'Request declined',ok?'good':'');load();refreshInbox();}catch(x){flash(x.message,'bad');}};
+  return html`<div className="screen">
+    <${Bar} title="Requests" sub="Private detail access" onBack=${back}/>
+    <p className="hint">Approving lets that student see all of your details, including the private ones.</p>
+    ${items===null?html`<div className="empty"><span className="spinner"></span></div>`:items.length===0?html`<${Empty} icon="bell" title="No pending requests" text="When someone asks to see your private details, it shows up here."/>`:
+    html`<div className="list">${items.map((it,i)=>{const u=board.byId[it.uid];if(!u)return null;return html`<div key=${it.uid} className="li" style=${{'--i':i,flexWrap:'wrap'}}>
+      <button type="button" className="row grow" style=${{background:'none',border:0,padding:0,color:'inherit',textAlign:'left'}} onClick=${()=>go('view',{uid:u.uid,source:'requests',category:'all'})}><${Avatar} u=${u} s=${44}/><div className="grow" style=${{minWidth:0}}><div className="nm">${u.name}</div><div className="meta">asked ${ago(it.at)}</div></div></button>
+      <div className="row"><button type="button" className="btn sec sm" onClick=${()=>act(it.uid,false)}>Decline</button><button type="button" className="btn pri sm" onClick=${()=>act(it.uid,true)}><${Icon} n="check" s=${16} sw=${2.6}/>Allow</button></div>
+    </div>`;})}</div>`}
+  </div>`;
+}
+
+/* ---------- radar map ---------- */
+function MapScreen({api,board,me,loc,ghost,onGhost,go,back,nearby,refreshNearby,net}){
+  const [sel,setSel]=useState(null);
+  useEffect(()=>{refreshNearby();const t=setInterval(refreshNearby,10000);return ()=>clearInterval(t);},[]);
+  const pts=(nearby||[]).map(u=>({...u,d:distM(loc,u),b:bearing(loc,u)})).sort((a,b)=>a.d-b.d);
+  const inside=pts.filter(p=>p.d<=RADIUS_M),outside=pts.filter(p=>p.d>RADIUS_M);
+  const colors=['#3ad7ff','#ff4fb0','#ffb547','#34f5c5','#9b6bff','#5fb8ff'];
+  const s=sel&&pts.find(p=>p.uid===sel);
+  return html`<div className="screen">
+    <${Bar} title="Nearby" sub=${'Online now · within '+RADIUS_M+' m'} onBack=${back} right=${html`<button type="button" className="ibtn" onClick=${refreshNearby} aria-label="Refresh"><${Icon} n="refresh" s=${18}/></button>`}/>
+    <div className="gps"><div>LAT<b>${loc.lat.toFixed(5)}</b></div><div>LNG<b>${loc.lng.toFixed(5)}</b></div><div>ACCURACY<b>±${loc.acc||'?'} m</b></div></div>
+    <div className="radar-wrap">
+      <svg viewBox="0 0 400 400">
+        <defs><radialGradient id="rbg"><stop offset="0" stopColor="rgba(58,215,255,.14)"/><stop offset="1" stopColor="rgba(58,215,255,.02)"/></radialGradient></defs>
+        <circle cx="200" cy="200" r="190" fill="url(#rbg)" stroke="rgba(58,215,255,.55)" strokeWidth="1.5"/>
+        ${[5,10,15].map(m=>html`<circle key=${m} cx="200" cy="200" r=${m/RADIUS_M*190} fill="none" stroke="rgba(58,215,255,.22)" strokeDasharray="3 5"/>`)}
+        <path d="M200 10v380M10 200h380" stroke="rgba(58,215,255,.18)"/>
+        ${[5,10,15,20].map(m=>html`<text key=${'t'+m} x=${204} y=${200-m/RADIUS_M*190+12} fill="rgba(140,156,198,.9)" style=${{font:'600 10px "JetBrains Mono",monospace'}}>${m} m</text>`)}
+        <text x="200" y="28" textAnchor="middle" fill="rgba(58,215,255,.9)" style=${{font:'700 11px "Chakra Petch",sans-serif'}}>N</text>
+      </svg>
+      <div className="sweep"></div>
+      <div className="me-dot" title="You"></div>
+      ${inside.map((p,i)=>{const rr=p.d/RADIUS_M*44;const x=50+rr*Math.sin(p.b),y=50-rr*Math.cos(p.b);return html`<button type="button" key=${p.uid} className=${'blip'+(sel===p.uid?' sel':'')} style=${{left:x+'%',top:y+'%','--c':colors[i%colors.length],'--i':i}} onClick=${()=>setSel(p.uid)} aria-label=${p.name+', '+p.d.toFixed(0)+' metres'}><span className="pinb"><${Avatar} u=${p} s=${34}/></span><span className="tail"></span></button>`;})}
+    </div>
+    ${ghost&&html`<div className="demo-ribbon"><${Icon} n="ghost" s=${18}/><span>Ghost mode is on: others cannot see you on their map.</span></div>`}
+    ${s&&html`<div className="popup" key=${s.uid}><div className="av-wrap"><${Avatar} u=${s} s=${54}/><span className="rk"><${RankBadge} r=${board.byId[s.uid]?board.byId[s.uid].rank:RANKS[0]} s=${22}/></span></div>
+      <div className="grow" style=${{minWidth:0}}><b>${s.name}</b><div className="small muted" style=${{overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>${[s.pub.branch,s.pub.year,s.pub.hostel].filter(Boolean).join(' · ')||'Student'}</div><div className="small" style=${{color:'var(--mint)'}}><span className="online-dot"></span> Online · ${s.d.toFixed(0)} m away</div></div>
+      <button type="button" className="btn pri sm" onClick=${()=>go('view',{uid:s.uid,source:'map',category:'all',dist:s.d})}>View</button>
+      <button type="button" className="ibtn" style=${{position:'absolute',top:'-12px',right:'-8px',width:'30px',height:'30px'}} onClick=${()=>setSel(null)} aria-label="Close"><${Icon} n="x" s=${14}/></button></div>`}
+    <div className="row"><span className="online-dot"></span><b className="grow">${inside.length} online within ${RADIUS_M} m</b><span className="small muted">${outside.length} online further away</span></div>
+    ${!net?html`<${Empty} icon="wifiOff" title="You are offline" text="Connect to the internet to see who is online around you."/>`:inside.length===0?html`<${Empty} icon="radar" title="Nobody online in range" text=${api.mode==='demo'?'This preview runs only on your device, so nobody else can appear. Once the app is connected to Firebase, every student who has the app open nearby shows up here.':'Only students who have Antaryami open and are connected to the internet appear here. The map refreshes every 10 seconds.'}/>`:
+    html`<div className="list">${inside.map((p,i)=>html`<button type="button" key=${p.uid} className="li" style=${{'--i':i}} onClick=${()=>setSel(p.uid)}>
+      <div className="av-wrap"><${Avatar} u=${p} s=${42}/></div><div className="grow"><div className="nm">${p.name}</div><div className="meta">${[p.pub.branch,p.pub.year].filter(Boolean).join(' · ')||'Student'}</div></div>
+      <div className="num"><b style=${{fontSize:'16px',color:'var(--mint)'}}>${p.d.toFixed(0)} m</b><span>away</span></div></button>`)}</div>`}
+    <div className="mitem" style=${{'--c':'var(--mint)',border:'1px solid var(--line)',cursor:'default'}}><span className="mi"><${Icon} n="ghost" s=${18}/></span><span className="grow">Ghost mode<div className="small muted" style=${{fontWeight:500}}>Hide yourself from other people's maps</div></span><button type="button" role="switch" aria-checked=${ghost} aria-label="Ghost mode" className=${'sw'+(ghost?' on':'')} onClick=${()=>onGhost(!ghost)}></button></div>
+  </div>`;
+}
+
+/* ---------- edit auth & info ---------- */
+function EditAuth({api,flash,onOk,back}){
+  const [pw,setPw]=useState('');const [err,setErr]=useState('');const [busy,setBusy]=useState(false);
+  const go=async e=>{e.preventDefault();if(!pw){setErr('Enter your password.');return;}setBusy(true);try{await api.reauth(pw);onOk();}catch(x){setErr(x.message);}finally{setBusy(false);}};
+  return html`<form className="screen" onSubmit=${go} noValidate>
+    <${Bar} title="Edit profile" sub="Confirm it's you" onBack=${back}/>
+    <div className="center-stage" style=${{flex:'none',paddingBlock:'10px'}}><div className="beacon" style=${{width:'120px',height:'120px'}}><div className="core"><${Icon} n="lock" s=${32}/></div></div></div>
+    <div className="panel glow corner" style=${{display:'flex',flexDirection:'column',gap:'14px'}}>
+      <label className="field"><span className="lbl">Password</span><div className="inp-wrap"><span className="ic"><${Icon} n="key" s=${18}/></span><input id="reauth-pw" className=${'inp'+(err?' bad':'')} type="password" autoFocus autoComplete="current-password" value=${pw} onChange=${e=>{setPw(e.target.value);setErr('');}}/></div>${err&&html`<span className="err">${err}</span>`}</label>
+      <button type="submit" className="btn pri block" disabled=${busy}>${busy?html`<span className="spinner"></span>`:html`<${Icon} n="unlock" s=${18}/>`}Unlock editing</button>
+    </div>
+  </form>`;
+}
+function Info({api,back}){
+  return html`<div className="screen">
+    <${Bar} title="App info" onBack=${back}/>
+    <div className="panel glow corner" style=${{display:'flex',flexDirection:'column',alignItems:'center',gap:'10px',textAlign:'center'}}>
+      <img src=${LOGO} alt="Antaryami logo" style=${{width:'110px',height:'110px',borderRadius:'30px',boxShadow:'0 0 50px -10px rgba(58,215,255,.7)'}}/>
+      <h1 style=${{letterSpacing:'.24em',fontSize:'24px'}}>ANTARYAMI</h1>
+      <div className="row wrap" style=${{justifyContent:'center'}}><span className="tag">v${APP_VERSION}</span><span className="tag" style=${{'--c':api.mode==='demo'?'var(--violet)':'var(--mint)'}}>${api.mode==='demo'?'Preview mode':'Live'}</span></div>
+      <p className="muted" style=${{margin:0}}>A campus geo-social app: see who is around you, explore students by what they do, and climb the monthly ranks.</p>
+    </div>
+    <div className="panel"><div className="sec-title">About the creator</div><p style=${{margin:'10px 0 0'}}><b>${CREATOR.name}</b> · ${CREATOR.place}</p><p className="muted small" style=${{margin:'6px 0 0'}}>${CREATOR.note}</p></div>
+    <div className="panel"><div className="sec-title">How points work</div>
+      <ul className="small" style=${{margin:'10px 0 0',paddingLeft:'18px',display:'flex',flexDirection:'column',gap:'6px'}}>
+        <li>Someone opens your profile from <b>All Categories</b> search: +1 point.</li>
+        <li>From <b>Sports, Academic, Clubs, Hackathon or Esports</b> search: +2 points, also added to that category.</li>
+        <li>Every 5 profile views: +1 point. Each visitor counts once per hour.</li>
+        <li>Lead a category and win its title (Sikandar, Bazigar, Club Star, Hacker, Gamer, Superstar): +5 points.</li>
+        <li>Points and titles reset at the end of every month; ranks run Bronze → Grandmaster.</li>
+      </ul></div>
+  </div>`;
+}
+
+/* ---------- flash ---------- */
+function Flash({f}){if(!f)return null;return html`<div className=${'flash '+(f.kind||'')} role="status" key=${f.id}><span className="fi"><${Icon} n=${f.kind==='bad'?'alert':f.kind==='good'?'check':'info'} s=${18}/></span><span>${f.msg}</span></div>`;}
+
+/* =====================================================================
+   APP
+   ===================================================================== */
+function App(){
+  const [api,setApi]=useState(null);
+  const [phase,setPhase]=useState('intro');
+  const [loc,setLoc]=useState(null);
+  const [nav,setNav]=useState([{s:'login'}]);
+  const [me,setMe]=useState(null);
+  const [users,setUsers]=useState([]);
+  const [visits,setVisits]=useState([]);
+  const [incoming,setIncoming]=useState([]);
+  const [nearby,setNearby]=useState([]);
+  const [ghost,setGhost]=useState(false);
+  const [menu,setMenu]=useState(false);
+  const [flash,setFlashS]=useState(null);
+  const [shut,setShut]=useState(false);
+  const flashT=useRef();
+  const [net,setNet]=useState(typeof navigator==='undefined'?true:navigator.onLine!==false);
+  const locRef=useRef(null);
+  const say=useCallback((msg,kind)=>{clearTimeout(flashT.current);setFlashS({msg,kind,id:Date.now()});flashT.current=setTimeout(()=>setFlashS(null),3800);},[]);
+
+  useEffect(()=>{(async()=>{
+    if(FIREBASE_CONFIG){const b=new FirebaseBackend(FIREBASE_CONFIG);try{await b.init();setApi(b);return;}catch(e){say('Could not reach the server. Running in preview mode.','bad');}}
+    const d=new DemoBackend();d.onEvent=ev=>{if(ev.type==='approved'){say('Access approved (demo: they accepted)','good');dispatchEvent(new CustomEvent('ant-approved',{detail:{uid:ev.uid}}));}};setApi(d);
+  })();},[]);
+
+  const top=nav[nav.length-1];
+  const go=(s,p={})=>{setMenu(false);setNav(n=>[...n,{s,...p}]);window.scrollTo(0,0);};
+  const back=()=>{setNav(n=>n.length>1?n.slice(0,-1):n);window.scrollTo(0,0);};
+  const reset=s=>{setMenu(false);setNav([{s}]);window.scrollTo(0,0);};
+
+  const refresh=useCallback(async()=>{if(!api)return;const [u,v,inc]=await Promise.all([api.listUsers(),api.visits(),api.incoming()]);setUsers(u);setVisits(v);setIncoming(inc);},[api]);
+  const refreshNearby=useCallback(async()=>{if(!api||!loc)return;try{setNearby(await api.nearby(loc));}catch(e){}},[api,loc]);
+  const enter=async uid=>{const m=await api.getMine();setMe(m);setGhost(await api.getGhost());await refresh();const fresh=!m.profile.name&&!m.photo;reset(fresh?'setup':'hub');};
+
+  locRef.current=loc;
+  useEffect(()=>{const on=()=>setNet(true),off=()=>setNet(false);addEventListener('online',on);addEventListener('offline',off);return ()=>{removeEventListener('online',on);removeEventListener('offline',off);};},[]);
+  /* presence heartbeat: only while the app is open, visible and online */
+  useEffect(()=>{
+    if(!api||!me||!locRef.current)return;
+    const beat=()=>{if(document.visibilityState!=='visible'||navigator.onLine===false||!locRef.current)return;api.updateLocation(locRef.current).catch(()=>{});};
+    const vis=()=>{if(document.visibilityState==='hidden')api.goOffline().catch(()=>{});else{beat();refreshNearby();}};
+    const bye=()=>{api.goOffline().catch(()=>{});};
+    beat();refreshNearby();const t=setInterval(beat,HEARTBEAT_MS);
+    document.addEventListener('visibilitychange',vis);addEventListener('pagehide',bye);addEventListener('offline',bye);
+    return ()=>{clearInterval(t);document.removeEventListener('visibilitychange',vis);removeEventListener('pagehide',bye);removeEventListener('offline',bye);};
+  },[api,me&&me.uid,!!loc,net]);
+  useEffect(()=>{window.antBack=()=>{if(menu){setMenu(false);return true;}if(phase==='app'&&nav.length>1){back();return true;}return false;};},[menu,nav,phase]);
+  useEffect(()=>{if(phase!=='app'||!loc||loc.demo||!navigator.geolocation)return;const id=navigator.geolocation.watchPosition(p=>setLoc({lat:p.coords.latitude,lng:p.coords.longitude,acc:Math.round(p.coords.accuracy)}),()=>{},{enableHighAccuracy:true,maximumAge:15000});return ()=>navigator.geolocation.clearWatch(id);},[phase,!!loc&&loc.demo]);
+  useEffect(()=>{if(!me)return;const t=setInterval(refresh,30000);return ()=>clearInterval(t);},[me,refresh]);
+
+  const afterLocation=async l=>{setLoc(l);setPhase('app');const uid=await api.restore();if(uid)await enter(uid);else reset('login');};
+  const denied=()=>{say('To open this app please allow location access','bad');setShut(true);setTimeout(()=>{setShut(false);setPhase('closed');},1100);
+    if(window.AndroidBridge&&window.AndroidBridge.exitApp)setTimeout(()=>window.AndroidBridge.exitApp(),2400);};
+  const logout=async()=>{await api.logout();setMe(null);setMenu(false);reset('login');say('Logged out','good');};
+  const setGhostMode=async b=>{setGhost(b);try{await api.setGhost(b);say(b?'Ghost mode on: hidden from the map':'You are visible on the map again','good');}catch(x){say(x.message,'bad');}};
+
+  const board=useMemo(()=>computeBoard(users),[users]);
+  const nearCount=useMemo(()=>loc?nearby.filter(u=>distM(loc,u)<=RADIUS_M).length:0,[nearby,loc]);
+
+  if(!api)return html`<div className="app"><div className="center-stage"><span className="spinner" style=${{color:'var(--cyan)'}}></span></div></div>`;
+  let body;
+  if(phase==='intro')body=html`<${Intro} onDone=${()=>setPhase('gate')}/>`;
+  else if(phase==='gate')body=html`<${LocationGate} demo=${api.mode==='demo'} onGranted=${afterLocation} onDenied=${denied}/>`;
+  else if(phase==='closed')body=html`<${Closed} demo=${api.mode==='demo'} onRetry=${()=>setPhase('gate')} onDemo=${()=>afterLocation({...DEMO_LOC,demo:true})}/>`;
+  else{
+    const s=top.s;
+    if(s==='login')body=html`<${Login} api=${api} flash=${say} onIn=${enter} onCreate=${()=>go('register')}/>`;
+    else if(s==='register')body=html`<${Register} api=${api} flash=${say} onBack=${back} onDone=${enter}/>`;
+    else if(!me)body=html`<${Login} api=${api} flash=${say} onIn=${enter} onCreate=${()=>go('register')}/>`;
+    else if(s==='setup'||s==='edit')body=html`<${Setup} key=${s} api=${api} mine=${me} flash=${say} editing=${s==='edit'} onCancel=${s==='edit'?back:()=>{reset('hub');}} onSaved=${async()=>{setMe(await api.getMine());await refresh();reset('hub');}}/>`;
+    else if(!board.byId[me.uid])body=html`<div className="center-stage"><span className="spinner"></span></div>`;
+    else if(s==='hub')body=html`<${Hub} me=${me} board=${board} nearCount=${nearCount} incomingCount=${incoming.length} visitsCount=${visits.length} go=${go} openMenu=${()=>setMenu(true)}/>`;
+    else if(s==='profile')body=html`<${MyProfile} api=${api} me=${me} setMe=${setMe} flash=${say} go=${go} back=${back}/>`;
+    else if(s==='leaderboard')body=html`<${Leaderboard} board=${board} me=${me} go=${go} back=${back}/>`;
+    else if(s==='missions')body=html`<${Missions} board=${board} me=${me} back=${back}/>`;
+    else if(s==='titles')body=html`<${Titles} board=${board} me=${me} go=${go} back=${back}/>`;
+    else if(s==='search')body=html`<${Search} board=${board} me=${me} go=${go} back=${back}/>`;
+    else if(s==='view')body=html`<${ViewProfile} key=${top.uid} api=${api} board=${board} uid=${top.uid} source=${top.source} category=${top.category} dist=${top.dist} flash=${say} refresh=${refresh} back=${back}/>`;
+    else if(s==='stalkers')body=html`<${Stalkers} visits=${visits} board=${board} go=${go} back=${back}/>`;
+    else if(s==='requests')body=html`<${Requests} api=${api} board=${board} flash=${say} refreshInbox=${refresh} go=${go} back=${back}/>`;
+    else if(s==='map')body=html`<${MapScreen} api=${api} board=${board} me=${me} loc=${loc} ghost=${ghost} onGhost=${setGhostMode} go=${go} back=${back} nearby=${nearby} refreshNearby=${refreshNearby} net=${net}/>`;
+    else if(s==='editAuth')body=html`<${EditAuth} api=${api} flash=${say} back=${back} onOk=${()=>{setNav(n=>[...n.slice(0,-1),{s:'edit'}]);}}/>`;
+    else if(s==='info')body=html`<${Info} api=${api} back=${back}/>`;
+  }
+  return html`<div className="app">
+    <div key=${phase+top.s+(top.uid||'')} style=${{display:'contents'}}>${body}</div>
+    ${menu&&me&&html`<${Drawer} me=${me} board=${board} incomingCount=${incoming.length} visitsCount=${visits.length} ghost=${ghost} onGhost=${setGhostMode} go=${go} onClose=${()=>setMenu(false)} onLogout=${logout}/>`}
+    <${Flash} f=${flash}/>
+    ${me&&!net&&phase==='app'&&html`<div className="offline" role="status"><${Icon} n="wifiOff" s=${18}/>You are offline · hidden from the map until you reconnect</div>`}
+    ${shut&&html`<div className="shutdown"></div>`}
+  </div>`;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(html`<${App}/>`);
+</script>
+
+</body></html>
